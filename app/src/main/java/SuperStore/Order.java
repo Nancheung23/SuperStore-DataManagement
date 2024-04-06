@@ -15,6 +15,7 @@ public class Order {
     private Address address;
     private String shipMode;
     private HashSet<Product> products;
+    private boolean isReturn;
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     /**
@@ -27,8 +28,9 @@ public class Order {
      * @param shipMode  Mode of shipment.
      * @param products  Set of products in the order.
      */
-    public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address, final String shipMode,
-            HashSet<Product> products) {
+    public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address,
+            final String shipMode,
+            HashSet<Product> products, boolean isReturn) {
         setOrderId(orderId);
         setOrderDate(orderDate);
         setShipDate(shipDate);
@@ -39,7 +41,7 @@ public class Order {
 
     /**
      * Default constructor for Order.
-     */    
+     */
     public Order() {
 
     }
@@ -175,4 +177,23 @@ public class Order {
             this.products = products;
         }
     }
+
+    /**
+     * Gets the return result of this order.
+     *
+     * @return The return result.
+     */
+    public boolean isReturn() {
+        return isReturn;
+    }
+
+    /**
+     * Sets the return result for this order.
+     *
+     * @param isReturn The return result.
+     */
+    public void setReturn(final boolean isReturn) {
+        this.isReturn = isReturn;
+    }
+
 }
