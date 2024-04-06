@@ -5,13 +5,13 @@ package SuperStore;
  * sales, quantity, discount, and profit.
  */
 public class Product {
-    String productId;
-    String productName;
-    CategoryInfo category;
-    double sales;
-    int quantity;
-    double discount;
-    double profit;
+    private String productId;
+    private String productName;
+    private CategoryInfo category;
+    private double sales;
+    private int quantity;
+    private double discount;
+    private double profit;
 
     /**
      * Constructs a new Product with the given details.

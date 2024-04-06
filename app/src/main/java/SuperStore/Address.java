@@ -5,11 +5,11 @@ package SuperStore;
  * region, state, and city.
  */
 public class Address {
-    String country;
-    int postalCode;
-    String region;
-    String state;
-    String city;
+    private String country;
+    private int postalCode;
+    private String region;
+    private String state;
+    private String city;
 
     /**
      * Constructs a new Address with the specified country, postal code, region,
