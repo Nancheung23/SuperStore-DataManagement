@@ -27,7 +27,7 @@ public class Order {
      * @param shipMode  Mode of shipment.
      * @param products  Set of products in the order.
      */
-    public Order(String orderId, LocalDate orderDate, LocalDate shipDate, Address address, String shipMode,
+    public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address, final String shipMode,
             HashSet<Product> products) {
         setOrderId(orderId);
         setOrderDate(orderDate);
@@ -35,6 +35,13 @@ public class Order {
         setAddress(address);
         setShipMode(shipMode);
         setProducts(products);
+    }
+
+    /**
+     * Default constructor for Order.
+     */    
+    public Order() {
+
     }
 
     /**
@@ -74,7 +81,7 @@ public class Order {
      * @param orderDate The order date.
      * @throws IllegalArgumentException If orderDate is null.
      */
-    public void setOrderDate(LocalDate orderDate) {
+    public void setOrderDate(final LocalDate orderDate) {
         if (orderDate == null) {
             throw new IllegalArgumentException("orderDate cannot be null");
         }
@@ -96,7 +103,7 @@ public class Order {
      * @param shipDate The ship date.
      * @throws IllegalArgumentException If shipDate is null.
      */
-    public void setShipDate(LocalDate shipDate) {
+    public void setShipDate(final LocalDate shipDate) {
         if (shipDate == null) {
             throw new IllegalArgumentException("shipDate cannot be null");
         }
@@ -118,7 +125,7 @@ public class Order {
      * @param address The shipping address.
      * @throws IllegalArgumentException If address is null.
      */
-    public void setAddress(Address address) {
+    public void setAddress(final Address address) {
         if (address == null) {
             throw new IllegalArgumentException("address cannot be null");
         }
@@ -140,7 +147,7 @@ public class Order {
      * @param shipMode The shipping mode.
      * @throws IllegalArgumentException If shipMode is null or empty.
      */
-    public void setShipMode(String shipMode) {
+    public void setShipMode(final String shipMode) {
         if ((shipMode == null) || (shipMode.isEmpty())) {
             throw new IllegalArgumentException("shipMode cannot be null or empty");
         }
@@ -161,7 +168,7 @@ public class Order {
      *
      * @param products The set of products.
      */
-    public void setProducts(HashSet<Product> products) {
+    public void setProducts(final HashSet<Product> products) {
         if (products == null) {
             this.products = new HashSet<>(); // Corrected to assign a new HashSet to the class field
         } else {

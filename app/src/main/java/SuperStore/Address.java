@@ -23,7 +23,7 @@ public class Address {
      * @throws IllegalArgumentException If any parameter is null or does not meet
      *                                  format requirements.
      */
-    public Address(String country, int postalCode, String region, String state, String city) {
+    public Address(final String country, final int postalCode, final String region, final String state, final String city) {
         setCountry(country);
         setPostalCode(postalCode);
         setRegion(region);

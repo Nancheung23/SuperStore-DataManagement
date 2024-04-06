@@ -25,8 +25,8 @@ public class Product {
      * @param profit      Profit earned from the product.
      * @throws IllegalArgumentException if any argument does not meet requirements.
      */
-    public Product(String productId, String productName, CategoryInfo category,
-            double sales, int quantity, double discount, double profit) {
+    public Product(final String productId, final String productName, final CategoryInfo category,
+            final double sales, final int quantity, final double discount, final double profit) {
         setProductId(productId);
         setProductName(productName);
         setCategory(category);
