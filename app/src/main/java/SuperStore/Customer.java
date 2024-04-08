@@ -1,6 +1,6 @@
 package SuperStore;
 
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * Represents a customer with their ID, name, segment, and a collection of
@@ -10,7 +10,7 @@ public class Customer {
     private String customerId;
     private String customerName;
     private String segment;
-    private HashSet<Order> orders;
+    private HashMap<String,Order> ordersMap;
 
     /**
      * Constructs a Customer with the specified ID, name, segment, and orders.
@@ -18,15 +18,15 @@ public class Customer {
      * @param customerId   Unique identifier for the customer.
      * @param customerName Name of the customer.
      * @param segment      Segment the customer belongs to.
-     * @param orders       Set of orders associated with the customer.
+     * @param orders       Map of orders associated with the customer.
      * @throws IllegalArgumentException If any string parameter is null or empty.
      */
     public Customer(final String customerId, final String customerName, final String segment,
-            final HashSet<Order> orders) {
+            final HashMap<String,Order> ordersMap) {
         setCustomerId(customerId);
         setCustomerName(customerName);
         setSegment(segment);
-        setOrders(orders);
+        setOrders(ordersMap);
     }
 
     /**
@@ -104,24 +104,24 @@ public class Customer {
     }
 
     /**
-     * Gets the set of orders associated with the customer.
+     * Gets the Map of orders associated with the customer.
      *
      * @return The customer's orders.
      */
-    public HashSet<Order> getOrders() {
-        return orders;
+    public HashMap<String,Order> getOrders() {
+        return ordersMap;
     }
 
     /**
      * Sets the orders associated with the customer.
      *
-     * @param orders The set of orders for the customer.
+     * @param orders The Map of orders for the customer.
      */
-    public void setOrders(HashSet<Order> orders) {
+    public void setOrders(HashMap<String,Order> orders) {
         if (orders == null) {
-            this.orders = new HashSet<>();
+            this.ordersMap = new HashMap<>();
         } else {
-            this.orders = orders;
+            this.ordersMap = orders;
         }
     }
 }

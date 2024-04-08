@@ -2,7 +2,7 @@ package SuperStore;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * Represents an order with details such as order ID, order date, ship date,
@@ -14,7 +14,7 @@ public class Order {
     private LocalDate shipDate;
     private Address address;
     private String shipMode;
-    private HashSet<Product> products;
+    private HashMap<String,Product> products;
     private boolean isReturn;
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -26,11 +26,11 @@ public class Order {
      * @param shipDate  Date the order is scheduled to ship.
      * @param address   Shipping address for the order.
      * @param shipMode  Mode of shipment.
-     * @param products  Set of products in the order.
+     * @param products  Map of products in the order.
      */
     public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address,
             final String shipMode,
-            HashSet<Product> products, boolean isReturn) {
+            HashMap<String,Product> products, boolean isReturn) {
         setOrderId(orderId);
         setOrderDate(orderDate);
         setShipDate(shipDate);
@@ -159,20 +159,20 @@ public class Order {
     /**
      * Gets the set of products in this order.
      *
-     * @return The set of products.
+     * @return The Map of products.
      */
-    public HashSet<Product> getProducts() {
+    public HashMap<String,Product> getProducts() {
         return products;
     }
 
     /**
      * Sets the set of products for this order.
      *
-     * @param products The set of products.
+     * @param products The map of products.
      */
-    public void setProducts(final HashSet<Product> products) {
+    public void setProducts(final HashMap<String,Product> products) {
         if (products == null) {
-            this.products = new HashSet<>(); // Corrected to assign a new HashSet to the class field
+            this.products = new HashMap<>(); // Corrected to assign a new HashMap to the class field
         } else {
             this.products = products;
         }
