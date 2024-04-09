@@ -36,7 +36,14 @@ public class App {
         Order resultOrder = CustomerMapUtils.getOrderById(ig.getCustomerMap(), "CA-2017-153822");
         System.out.println(resultOrder.toString());
         // Product get
-        Product resultProduct = CustomerMapUtils.geProductById(ig.getCustomerMap(), "OFF-AP-10001492");
+        Product resultProduct = CustomerMapUtils.getProductById(ig.getCustomerMap(), "OFF-AP-10001492");
         System.out.println(resultProduct);
+        // Total sales
+        System.out.println(CustomerMapUtils.getTotalSalesForOrder(ig.getCustomerMap(), "CA-2017-153822"));
+        // Average sales
+        System.out.println(CustomerMapUtils.getAverageSalesForOrder(ig.getCustomerMap(), "CA-2017-153822"));
+        System.out.println(CustomerMapUtils.getAverageSalesForAllOrders(ig.getCustomerMap()));
+        // Best Customer
+        System.out.println(CustomerMapUtils.getBestCustomer(ig.getCustomerMap()));
     }
 }
