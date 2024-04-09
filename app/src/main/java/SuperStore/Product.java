@@ -193,4 +193,16 @@ public class Product {
     public void setProfit(final double profit) {
         this.profit = profit;
     }
+
+    @Override
+    public String toString() {
+        return "Id:" + getProductId() + 
+        "\nName:" + getProductName() + 
+        "\nCategory:" + getCategory() + 
+        "\nSales:" + getSales() +
+        "\nQuantity:" + getQuantity() +
+        "\nDiscount:" + getDiscount() +
+        "\nProfit:" + getProfit()
+        ;
+    }
 }

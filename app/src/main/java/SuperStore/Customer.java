@@ -132,4 +132,12 @@ public class Customer {
             this.ordersMap = orders;
         }
     }
+
+    @Override
+    public String toString() {
+        return "Id:" + this.customerId + 
+        "\nName:" + this.customerName + 
+        "\nSegment:" + this.segment + 
+        "\nOrders:" + this.ordersMap.size();
+    }
 }

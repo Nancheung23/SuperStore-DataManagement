@@ -23,4 +23,11 @@ public record CategoryInfo(String category, String subCategory) {
             throw new IllegalArgumentException("Sub-category name cannot be null or empty");
         }
     }
+
+    @Override
+    public final String toString() {
+        return "Category:" + this.category + 
+        "\nSubCategory:" + this.subCategory
+        ;
+    }
 }

@@ -205,4 +205,15 @@ public class Order {
     public void setReturn(final boolean isReturn) {
         this.isReturn = isReturn;
     }
+
+    @Override
+    public String toString() {
+        return "Id:" + this.orderId + 
+        "\nOrderDate:" + getOrderDate() + 
+        "\nShipDate:" + getShipDate() + 
+        "\nAddress:" + getAddress().toString() +
+        "\nShipMode:" + getShipMode() +
+        "\nProducts:" + getProducts().size()
+        ;
+    }
 }

@@ -144,4 +144,13 @@ public class Address {
         }
         this.city = city;
     }
+
+    @Override
+    public String toString() {
+        return "Country:" + this.country +
+        "\nState:" + this.state +  
+        "\nRegion:" + this.region + 
+        "\nCity:" + this.city + 
+        "\nPostalCode:" + this.postalCode;
+    }
 }
