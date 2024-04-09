@@ -14,7 +14,7 @@ public class Order {
     private LocalDate shipDate;
     private Address address;
     private String shipMode;
-    private HashMap<String,Product> products;
+    private HashMap<String, Product> products;
     private boolean isReturn;
     DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -30,7 +30,17 @@ public class Order {
      */
     public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address,
             final String shipMode,
-            HashMap<String,Product> products, boolean isReturn) {
+            HashMap<String, Product> products, boolean isReturn) {
+        setOrderId(orderId);
+        setOrderDate(orderDate);
+        setShipDate(shipDate);
+        setAddress(address);
+        setShipMode(shipMode);
+        setProducts(products);
+    }
+
+    public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address,
+            final String shipMode, boolean isReturn) {
         setOrderId(orderId);
         setOrderDate(orderDate);
         setShipDate(shipDate);
@@ -43,7 +53,7 @@ public class Order {
      * Default constructor for Order.
      */
     public Order() {
-
+        setProducts(products);
     }
 
     /**
@@ -161,7 +171,7 @@ public class Order {
      *
      * @return The Map of products.
      */
-    public HashMap<String,Product> getProducts() {
+    public HashMap<String, Product> getProducts() {
         return products;
     }
 
@@ -170,7 +180,7 @@ public class Order {
      *
      * @param products The map of products.
      */
-    public void setProducts(final HashMap<String,Product> products) {
+    public void setProducts(final HashMap<String, Product> products) {
         if (products == null) {
             this.products = new HashMap<>(); // Corrected to assign a new HashMap to the class field
         } else {
@@ -195,5 +205,4 @@ public class Order {
     public void setReturn(final boolean isReturn) {
         this.isReturn = isReturn;
     }
-
 }

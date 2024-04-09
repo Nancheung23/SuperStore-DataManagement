@@ -56,13 +56,13 @@ public class FileDataProcessor {
      *
      * @throws IOException if an I/O error occurs reading from the file.
      */
-    public void processFile() throws IOException {
+    public List<String[]> processFile() throws IOException {
         try (BufferedReader bfr = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = bfr.readLine()) != null) {
                 lines.add(line);
             }
-            processLinesIntoArrays(lines);
+            return processLinesIntoArrays(lines);
         } catch (IOException e) {
             throw new IOException("Error reading from file: " + filePath, e);
         }

@@ -10,7 +10,7 @@ public class Customer {
     private String customerId;
     private String customerName;
     private String segment;
-    private HashMap<String,Order> ordersMap;
+    private HashMap<String, Order> ordersMap;
 
     /**
      * Constructs a Customer with the specified ID, name, segment, and orders.
@@ -22,7 +22,14 @@ public class Customer {
      * @throws IllegalArgumentException If any string parameter is null or empty.
      */
     public Customer(final String customerId, final String customerName, final String segment,
-            final HashMap<String,Order> ordersMap) {
+            final HashMap<String, Order> ordersMap) {
+        setCustomerId(customerId);
+        setCustomerName(customerName);
+        setSegment(segment);
+        setOrders(ordersMap);
+    }
+
+    public Customer(final String customerId, final String customerName, final String segment) {
         setCustomerId(customerId);
         setCustomerName(customerName);
         setSegment(segment);
@@ -35,6 +42,7 @@ public class Customer {
      */
     public Customer() {
         // Intentionally empty.
+        setOrders(ordersMap);
     }
 
     /**
@@ -108,7 +116,7 @@ public class Customer {
      *
      * @return The customer's orders.
      */
-    public HashMap<String,Order> getOrders() {
+    public HashMap<String, Order> getOrders() {
         return ordersMap;
     }
 
@@ -117,7 +125,7 @@ public class Customer {
      *
      * @param orders The Map of orders for the customer.
      */
-    public void setOrders(HashMap<String,Order> orders) {
+    public void setOrders(HashMap<String, Order> orders) {
         if (orders == null) {
             this.ordersMap = new HashMap<>();
         } else {

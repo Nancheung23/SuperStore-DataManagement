@@ -171,13 +171,8 @@ public class Product {
      * Sets the discount applied to the product.
      *
      * @param discount The discount percentage.
-     * @throws IllegalArgumentException if discount is less than 0 or greater than 1
-     *                                  (100%).
      */
     public void setDiscount(final double discount) {
-        if (discount <= 0) {
-            throw new IllegalArgumentException("discount cannot be lower than 0");
-        }
         this.discount = discount;
     }
 

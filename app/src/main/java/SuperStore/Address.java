@@ -74,12 +74,8 @@ public class Address {
      * Sets the postal code of the address.
      *
      * @param postalCode The postal code of the address.
-     * @throws IllegalArgumentException If the postal code is invalid.
      */
     public void setPostalCode(final int postalCode) {
-        if (postalCode < 10000) {
-            throw new IllegalArgumentException("postal code has wrong format");
-        }
         this.postalCode = postalCode;
     }
 
