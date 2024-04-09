@@ -82,4 +82,8 @@ public class CustomerMapUtils {
                 .mapToDouble(Product::getSales)
                 .sum();
     }
+
+    public static HashMap<String, Integer> getAmountCustomerPerState(HashMap<String, Customer> customerMap) {
+        return null;
+    }
 }
