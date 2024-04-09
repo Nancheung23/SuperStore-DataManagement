@@ -6,12 +6,24 @@ import java.time.format.DateTimeParseException;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This class is responsible for generating instances based on provided information.
+ * It processes lists of string arrays representing data records, generating customers,
+ * orders, and products from this data, and tracking returns.
+ */
 public class InstanceGenerator {
     private List<String[]> infoList;
     private HashMap<String, Customer> customerMap;
     private HashMap<String, Boolean> returnMap;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
 
+    /**
+     * Constructs an InstanceGenerator with predefined lists and maps.
+     * 
+     * @param infoList A list of string arrays containing data records.
+     * @param customerMap A map of customer ID to Customer objects.
+     * @param returnMap A map of order ID to return status.
+     */
     public InstanceGenerator(List<String[]> infoList, HashMap<String, Customer> customerMap, HashMap<String, Boolean> returnMap) {
         // get from FileDataProcessor
         this.infoList = infoList;
@@ -19,31 +31,60 @@ public class InstanceGenerator {
         this.returnMap = returnMap;
     }
 
+    /**
+     * Constructs an InstanceGenerator with only a list of data records.
+     * Initializes empty maps for customers and returns.
+     * 
+     * @param infoList A list of string arrays containing data records.
+     */
     public InstanceGenerator(List<String[]> infoList) {
         // get from FileDataProcessor
         this.infoList = infoList;
         this.customerMap = new HashMap<>();
         this.returnMap = new HashMap<>();
     }
-    
+
+    /**
+     * Returns the list of information records.
+     * 
+     * @return The list of string arrays representing data records.
+     */    
     public List<String[]> getInfoList() {
         return infoList;
     }
 
+    /**
+     * Returns the map of customers.
+     * 
+     * @return A map of customer ID to Customer objects.
+     */
     public HashMap<String, Customer> getCustomerMap() {
         return customerMap;
     }
 
+    /**
+     * Returns the map of return statuses.
+     * 
+     * @return A map of order ID to return status (Boolean).
+     */    
     public HashMap<String, Boolean> getReturnMap() {
         return returnMap;
     }
 
+    /**
+     * Initializes the instance by processing each record in the information list.
+     * Adds customers and their orders to the customer map.
+     */    
     public void initialization() {
-        infoList.forEach(arr -> {
-            addCustomer(arr);
-        });
+        infoList.forEach(this::addCustomer);
     }
 
+    /**
+     * Processes a single data record, adding or updating a customer and their order.
+     * 
+     * @param line A string array representing a single data record.
+     * @return A string indicating the result of the operation.
+     */
     public String addCustomer(String[] line) {
         String tempId = line[5];
         String tempName = line[6];
@@ -67,6 +108,13 @@ public class InstanceGenerator {
         }
     }
 
+    /**
+     * Adds or updates an order for a given customer based on the provided data record.
+     * 
+     * @param customer The customer object to add the order to.
+     * @param line A string array representing a single data record.
+     * @return A string indicating the result of the operation.
+     */
     public String addOrder(Customer customer, String[] line) {
         String tempOrderId = line[1];
         String tempOrderDate = line[2];
@@ -92,6 +140,7 @@ public class InstanceGenerator {
             order.setShipMode(tempShipMode);
             order.setAddress(tempAddress);
             customer.getOrders().put(tempOrderId, order);
+            setOrderReturn();
         }
         String productInfo = addProduct(order, line);
         int lengthOfMap = customer.getOrders().size();
@@ -102,6 +151,13 @@ public class InstanceGenerator {
         }
     }
 
+    /**
+     * Adds or updates a product within an order based on the provided data record.
+     * 
+     * @param order The order object to add the product to.
+     * @param line A string array representing a single data record.
+     * @return A string indicating the result of the operation.
+     */    
     public String addProduct(Order order, String[] line) {
         String tempProductId = line[13];
         String tempCategory = line[14];
@@ -123,6 +179,7 @@ public class InstanceGenerator {
             product.setQuantity(tempQuantity);
             product.setDiscount(tempDiscount);
             product.setProfit(tempProfit);
+            order.getProducts().put(tempProductId, product);
         }
         int lengthOfMap = order.getProducts().size();
         if (order.getProducts().size() - lengthOfMap == 1) {
@@ -132,6 +189,11 @@ public class InstanceGenerator {
         }
     }
 
+    /**
+     * Sets the return map based on a list of return records.
+     * 
+     * @param returnList A list of string arrays representing return records.
+     */
     public void setReturnMap(List<String[]> returnList) {
         returnList.forEach(l -> {
             if (l[0].equals("Yes")) {
@@ -140,6 +202,9 @@ public class InstanceGenerator {
         });
     }
 
+    /**
+     * Updates the return status of orders based on the return map.
+     */    
     public void setOrderReturn() {
         if (returnMap != null && customerMap != null) {
             for (String id : returnMap.keySet()) {

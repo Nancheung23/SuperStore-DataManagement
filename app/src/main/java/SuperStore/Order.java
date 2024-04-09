@@ -30,7 +30,7 @@ public class Order {
      */
     public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address,
             final String shipMode,
-            HashMap<String, Product> products, boolean isReturn) {
+            HashMap<String, Product> products) {
         setOrderId(orderId);
         setOrderDate(orderDate);
         setShipDate(shipDate);
@@ -40,7 +40,7 @@ public class Order {
     }
 
     public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address,
-            final String shipMode, boolean isReturn) {
+            final String shipMode) {
         setOrderId(orderId);
         setOrderDate(orderDate);
         setShipDate(shipDate);

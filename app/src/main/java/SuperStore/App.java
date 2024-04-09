@@ -7,11 +7,13 @@ import java.io.IOException;
 
 public class App {
     public static void main(String[] args) throws IOException {
-        FileDataProcessor fdp = new FileDataProcessor("C:\\Users\\zhang\\IdeaProjects\\2024-final-Nancheung23\\dataset\\SuperStoreOrders.csv");
+        FileDataProcessor fdp = new FileDataProcessor(
+                "C:\\Users\\zhang\\IdeaProjects\\2024-final-Nancheung23\\dataset\\SuperStoreOrders.csv");
         // for (String title : fdp.getTitles()) {
-        //     System.out.println(title);
+        // System.out.println(title);
         // }
-        FileDataProcessor rfdp = new FileDataProcessor("C:\\Users\\zhang\\IdeaProjects\\2024-final-Nancheung23\\dataset\\SuperStoreReturns.csv");
+        FileDataProcessor rfdp = new FileDataProcessor(
+                "C:\\Users\\zhang\\IdeaProjects\\2024-final-Nancheung23\\dataset\\SuperStoreReturns.csv");
         InstanceGenerator ig = new InstanceGenerator(fdp.processFile());
         ig.initialization();
         Customer example = ig.getCustomerMap().get("MA-17560");
@@ -22,7 +24,11 @@ public class App {
         // test -- returns
         System.out.println(rfdp.processFile().get(0)[1]);
         ig.setReturnMap(rfdp.processFile());
-        ig.setOrderReturn();
-        System.out.println(ig.getCustomerMap().size());
+        // Customer count
+        System.out.println(CustomerMapUtils.calculateCustomersNumber(ig.getCustomerMap()));
+        // Order count
+        System.out.println(CustomerMapUtils.calculateOrdersNumber(ig.getCustomerMap()));
+        // Product count
+        System.out.println(CustomerMapUtils.calculateProductsNumber(ig.getCustomerMap()));
     }
 }
