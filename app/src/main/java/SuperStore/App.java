@@ -53,7 +53,9 @@ public class App {
         CustomerMapUtils.getTotalSalesPerFilter(ig.getCustomerMap(),"Region").forEach((k,v) -> System.out.println((k + ":" + v)));
         // getTotalSalesPerFilter : Year
         CustomerMapUtils.getTotalSalesPerFilter(ig.getCustomerMap(),"Year").forEach((k,v) -> System.out.println((k + ":" + v)));
-        // getTotalSalesPerFilter : Year
+        // getTotalSalesPerFilter : Month
         CustomerMapUtils.getTotalSalesPerFilter(ig.getCustomerMap(),"Month").forEach((k,v) -> System.out.println((k + ":" + v)));
+        // getTotalSalesPerAttribute : any
+        CustomerMapUtils.getTotalSalesPerAttribute(ig.getCustomerMap(),o -> o.getShipDate().substring(0, 7)).forEach((k,v) -> System.out.println((k + ":" + v)));
     }
 }
