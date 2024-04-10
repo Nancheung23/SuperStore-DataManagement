@@ -45,5 +45,15 @@ public class App {
         System.out.println(CustomerMapUtils.getAverageSalesForAllOrders(ig.getCustomerMap()));
         // Best Customer
         System.out.println(CustomerMapUtils.getBestCustomer(ig.getCustomerMap()));
+        // getAmountCustomerPerFilter : State
+        CustomerMapUtils.getAmountCustomerPerFilter(ig.getCustomerMap(),"State").forEach((k,v) -> System.out.println(k + ":" + v));
+        // getAmountOfSegment
+        CustomerMapUtils.getAmountOfSegment(ig.getCustomerMap()).forEach((k,v) -> System.out.println((k + ":" + v)));
+        // getTotalSalesPerFilter : Region
+        CustomerMapUtils.getTotalSalesPerFilter(ig.getCustomerMap(),"Region").forEach((k,v) -> System.out.println((k + ":" + v)));
+        // getTotalSalesPerFilter : Year
+        CustomerMapUtils.getTotalSalesPerFilter(ig.getCustomerMap(),"Year").forEach((k,v) -> System.out.println((k + ":" + v)));
+        // getTotalSalesPerFilter : Year
+        CustomerMapUtils.getTotalSalesPerFilter(ig.getCustomerMap(),"Month").forEach((k,v) -> System.out.println((k + ":" + v)));
     }
 }
