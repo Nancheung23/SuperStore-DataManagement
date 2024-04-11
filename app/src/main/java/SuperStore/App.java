@@ -5,7 +5,14 @@ package SuperStore;
 
 import java.io.IOException;
 
-public class App {
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+
+public class App extends Application{
     public static void main(String[] args) throws IOException {
         FileDataProcessor fdp = new FileDataProcessor(
                 "C:\\Users\\zhang\\IdeaProjects\\2024-final-Nancheung23\\dataset\\SuperStoreOrders.csv");
@@ -57,5 +64,41 @@ public class App {
         CustomerMapUtils.getTotalSalesPerFilter(ig.getCustomerMap(),"Month").forEach((k,v) -> System.out.println((k + ":" + v)));
         // getTotalSalesPerAttribute : any
         CustomerMapUtils.getTotalSalesPerAttribute(ig.getCustomerMap(),o -> o.getShipDate().substring(0, 7)).forEach((k,v) -> System.out.println((k + ":" + v)));
+    
+        // javaFx
+        Application.launch(args);
+    }
+
+    @Override
+    public void init() throws Exception {
+        // TODO Auto-generated method stub
+        super.init();
+        System.out.println("DB session// threadpool");
+    }
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        System.out.println("start");
+        // add elements
+        Label label = new Label("Hello World!");
+        Button button = new Button("Example");
+        // set action
+        button.setOnAction(e -> {
+            getHostServices().showDocument("www.google.com");
+        });
+        BorderPane pane = new BorderPane(label, null, null, button, null);
+        Scene scene = new Scene(pane, 500, 500);
+        stage.setScene(scene);
+
+        // show
+        stage.setTitle("SuperStore App");
+        stage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        // TODO Auto-generated method stub
+        super.stop();
+        System.out.println("stop");
     }
 }
