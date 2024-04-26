@@ -4,16 +4,22 @@
 package SuperStore;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.io.File;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
@@ -62,18 +68,21 @@ public class App extends Application {
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
             if (selectedFile != null) {
                 filePathField.setText(selectedFile.getAbsolutePath());
-                // Here you can call your method to read and process the file
                 FileDataProcessor fdp = new FileDataProcessor(
                         selectedFile.getAbsolutePath());
-                // for (String title : fdp.getTitles()) {
-                // System.out.println(title);
-                // }
                 FileDataProcessor rfdp = new FileDataProcessor(
                         selectedFile.getAbsolutePath());
                 InstanceGenerator ig;
                 try {
+                    // init
                     ig = new InstanceGenerator(fdp.processFile());
                     ig.initialization();
+                    ig.setReturnMap(rfdp.processFile());
+                    // table
+                    HashMap<String, Customer> customerMap = ig.getCustomerMap();
+                    TableView<Customer> customerTable = createCustomerTable(customerMap);
+                    root.setCenter(customerTable);
+                    primaryStage.show();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -82,5 +91,26 @@ public class App extends Application {
 
         vbox.getChildren().addAll(label, filePathField, fileButton);
         root.setCenter(vbox);
+    }
+
+    private TableView<Customer> createCustomerTable(HashMap<String, Customer> customerMap) {
+        TableView<Customer> table = new TableView<>();
+        TableColumn<Customer, String> idColumn = new TableColumn<>("Customer ID");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+
+        TableColumn<Customer, String> nameColumn = new TableColumn<>("Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+
+        TableColumn<Customer, String> segmentColumn = new TableColumn<>("Segment");
+        segmentColumn.setCellValueFactory(new PropertyValueFactory<>("segment"));
+
+        table.getColumns().add(idColumn);
+        table.getColumns().add(nameColumn);
+        table.getColumns().add(segmentColumn);
+
+        ObservableList<Customer> data = FXCollections.observableArrayList(customerMap.values());
+        table.setItems(data);
+
+        return table;
     }
 }

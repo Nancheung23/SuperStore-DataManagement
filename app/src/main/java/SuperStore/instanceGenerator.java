@@ -89,7 +89,7 @@ public class InstanceGenerator {
         String tempId = line[5];
         String tempName = line[6];
         String tempSegment = line[7];
-        Customer customer = new Customer();
+        Customer customer = customerMap.getOrDefault(tempId, new Customer());
         // if no such customer, add new customer
         if (customerMap.containsKey(tempId)) {
             customer = customerMap.get(tempId);
@@ -97,7 +97,7 @@ public class InstanceGenerator {
             customer.setCustomerId(tempId);
             customer.setCustomerName(tempName);
             customer.setSegment(tempSegment);
-            customerMap.put(tempId, customer);
+            customerMap.putIfAbsent(tempId, customer);
         }
         String orderInfo = addOrder(customer, line);
         int lengthOfMap = customerMap.size();

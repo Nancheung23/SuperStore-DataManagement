@@ -1,143 +1,89 @@
 package SuperStore;
 
 import java.util.HashMap;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 
 /**
  * Represents a customer with their ID, name, segment, and a collection of
  * orders.
  */
 public class Customer {
-    private String customerId;
-    private String customerName;
-    private String segment;
-    private HashMap<String, Order> ordersMap;
+    private final SimpleStringProperty customerId = new SimpleStringProperty(this, "customerId");
+    private final SimpleStringProperty customerName = new SimpleStringProperty(this, "customerName");
+    private final SimpleStringProperty segment = new SimpleStringProperty(this, "segment");
+    private final ObservableMap<String, Order> ordersMap = FXCollections.observableHashMap();
 
     /**
-     * Constructs a Customer with the specified ID, name, segment, and orders.
+     * Constructs a Customer with the specified ID, name, and segment.
      *
      * @param customerId   Unique identifier for the customer.
      * @param customerName Name of the customer.
      * @param segment      Segment the customer belongs to.
-     * @param orders       Map of orders associated with the customer.
      * @throws IllegalArgumentException If any string parameter is null or empty.
      */
-    public Customer(final String customerId, final String customerName, final String segment,
-            final HashMap<String, Order> ordersMap) {
+    public Customer(String customerId, String customerName, String segment) {
         setCustomerId(customerId);
         setCustomerName(customerName);
         setSegment(segment);
-        setOrders(ordersMap);
     }
 
-    public Customer(final String customerId, final String customerName, final String segment) {
-        setCustomerId(customerId);
-        setCustomerName(customerName);
-        setSegment(segment);
-        setOrders(ordersMap);
-    }
-
-    /**
-     * Default constructor for creating a Customer instance without setting fields
-     * initially.
-     */
     public Customer() {
-        // Intentionally empty.
-        setOrders(ordersMap);
+
     }
 
-    /**
-     * Gets the customer ID.
-     *
-     * @return The customer ID.
-     */
-    public String getCustomerId() {
+    // Default constructor and other overloaded constructors as needed
+
+    // Property getters
+    public StringProperty customerIdProperty() {
         return customerId;
     }
 
-    /**
-     * Sets the customer ID.
-     *
-     * @param customerId The unique identifier for the customer.
-     * @throws IllegalArgumentException If customerId is null or empty.
-     */
-    public void setCustomerId(final String customerId) {
-        if ((customerId == null) || (customerId.isEmpty())) {
-            throw new IllegalArgumentException("customerId cannot be null or empty");
-        }
-        this.customerId = customerId;
-    }
-
-    /**
-     * Gets the customer name.
-     *
-     * @return The name of the customer.
-     */
-    public String getCustomerName() {
+    public StringProperty customerNameProperty() {
         return customerName;
     }
 
-    /**
-     * Sets the customer name.
-     *
-     * @param customerName The name of the customer.
-     * @throws IllegalArgumentException If customerName is null or empty.
-     */
-    public void setCustomerName(final String customerName) {
-        if ((customerName == null) || (customerName.isEmpty())) {
-            throw new IllegalArgumentException("customerName cannot be null or empty");
-        }
-        this.customerName = customerName;
-    }
-
-    /**
-     * Gets the segment of the customer.
-     *
-     * @return The customer's segment.
-     */
-    public String getSegment() {
+    public StringProperty segmentProperty() {
         return segment;
     }
 
-    /**
-     * Sets the segment of the customer.
-     *
-     * @param segment The segment the customer belongs to.
-     * @throws IllegalArgumentException If segment is null or empty.
-     */
-    public void setSegment(final String segment) {
-        if ((segment == null) || (segment.isEmpty())) {
-            throw new IllegalArgumentException("segment cannot be null or empty");
-        }
-        this.segment = segment;
+    // Regular getters and setters
+    public String getCustomerId() {
+        return customerId.get();
     }
 
-    /**
-     * Gets the Map of orders associated with the customer.
-     *
-     * @return The customer's orders.
-     */
-    public HashMap<String, Order> getOrders() {
+    public void setCustomerId(String customerId) {
+        this.customerId.set(customerId);
+    }
+
+    public String getCustomerName() {
+        return customerName.get();
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName.set(customerName);
+    }
+
+    public String getSegment() {
+        return segment.get();
+    }
+
+    public void setSegment(String segment) {
+        this.segment.set(segment);
+    }
+
+    public ObservableMap<String, Order> getOrders() {
         return ordersMap;
     }
 
-    /**
-     * Sets the orders associated with the customer.
-     *
-     * @param orders The Map of orders for the customer.
-     */
     public void setOrders(HashMap<String, Order> orders) {
-        if (orders == null) {
-            this.ordersMap = new HashMap<>();
-        } else {
-            this.ordersMap = orders;
+        if (orders != null) {
+            this.ordersMap.clear();
+            this.ordersMap.putAll(orders);
         }
     }
 
-    @Override
-    public String toString() {
-        return "Id:" + this.customerId + 
-        "\nName:" + this.customerName + 
-        "\nSegment:" + this.segment + 
-        "\nOrders:" + this.ordersMap.size();
-    }
+    // ToString, hashCode, equals as needed
 }
