@@ -6,13 +6,18 @@ package SuperStore;
 import java.io.IOException;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import java.io.File;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 
-public class App extends Application{
+public class App extends Application {
     public static void main(String[] args) throws IOException {
         // javaFx
         Application.launch(args);
@@ -27,20 +32,11 @@ public class App extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-        System.out.println("start");
-        // add elements
-        Label label = new Label("Hello World!");
-        Button button = new Button("Example");
-        // set action
-        button.setOnAction(e -> {
-            getHostServices().showDocument("www.google.com");
-        });
-        BorderPane pane = new BorderPane(label, null, null, button, null);
-        Scene scene = new Scene(pane, 500, 500);
+        BorderPane root = new BorderPane();
+        Scene scene = new Scene(root, 600, 400);
+        stage.setTitle("SuperStore Data Importer");
         stage.setScene(scene);
-
-        // show
-        stage.setTitle("SuperStore App");
+        addFileChooser(root, stage);
         stage.show();
     }
 
@@ -49,5 +45,42 @@ public class App extends Application{
         // TODO Auto-generated method stub
         super.stop();
         System.out.println("stop");
+    }
+
+    // GUI
+    private void addFileChooser(BorderPane root, Stage primaryStage) {
+        VBox vbox = new VBox(10);
+        // center display
+        vbox.setAlignment(Pos.CENTER);
+        Label label = new Label("Choose a CSV file:");
+        TextField filePathField = new TextField();
+        filePathField.setEditable(false);
+        Button fileButton = new Button("Browse...");
+
+        fileButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            if (selectedFile != null) {
+                filePathField.setText(selectedFile.getAbsolutePath());
+                // Here you can call your method to read and process the file
+                FileDataProcessor fdp = new FileDataProcessor(
+                        selectedFile.getAbsolutePath());
+                // for (String title : fdp.getTitles()) {
+                // System.out.println(title);
+                // }
+                FileDataProcessor rfdp = new FileDataProcessor(
+                        selectedFile.getAbsolutePath());
+                InstanceGenerator ig;
+                try {
+                    ig = new InstanceGenerator(fdp.processFile());
+                    ig.initialization();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        vbox.getChildren().addAll(label, filePathField, fileButton);
+        root.setCenter(vbox);
     }
 }
