@@ -1,35 +1,34 @@
 package SuperStore;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.*;
+import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder;
+import javafx.collections.FXCollections;
+import javafx.util.converter.LocalDateStringConverter;
+import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder;
+import javafx.util.converter.LocalDateStringConverter;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
-/**
- * Represents an order with details such as order ID, order date, ship date,
- * shipping address, shipping mode, and a collection of ordered products.
- */
 public class Order {
-    private String orderId;
-    private LocalDate orderDate;
-    private LocalDate shipDate;
-    private Address address;
-    private String shipMode;
-    private HashMap<String, Product> products;
-    private boolean isReturn;
-    DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final StringProperty orderId = new SimpleStringProperty(this, "orderId");
+    private final ObjectProperty<LocalDate> orderDate = new SimpleObjectProperty<>(this, "orderDate");
+    private final ObjectProperty<LocalDate> shipDate = new SimpleObjectProperty<>(this, "shipDate");
+    private final ObjectProperty<Address> address = new SimpleObjectProperty<>(this, "address");
+    private final StringProperty shipMode = new SimpleStringProperty(this, "shipMode");
+    private final MapProperty<String, Product> products = new SimpleMapProperty<>(this, "products",
+            FXCollections.observableHashMap());
+    private final BooleanProperty isReturn = new SimpleBooleanProperty(this, "isReturn");
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
-    /**
-     * Constructs an Order with the specified details.
-     *
-     * @param orderId   Unique identifier for the order.
-     * @param orderDate Date the order was placed.
-     * @param shipDate  Date the order is scheduled to ship.
-     * @param address   Shipping address for the order.
-     * @param shipMode  Mode of shipment.
-     * @param products  Map of products in the order.
-     */
-    public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address,
-            final String shipMode,
+    // Constructors
+    public Order() {
+        // Default constructor
+    }
+
+    public Order(String orderId, LocalDate orderDate, LocalDate shipDate, Address address, String shipMode,
             HashMap<String, Product> products) {
         setOrderId(orderId);
         setOrderDate(orderDate);
@@ -39,181 +38,91 @@ public class Order {
         setProducts(products);
     }
 
-    public Order(final String orderId, final LocalDate orderDate, final LocalDate shipDate, final Address address,
-            final String shipMode) {
-        setOrderId(orderId);
-        setOrderDate(orderDate);
-        setShipDate(shipDate);
-        setAddress(address);
-        setShipMode(shipMode);
-        setProducts(products);
-    }
-
-    /**
-     * Default constructor for Order.
-     */
-    public Order() {
-        setProducts(products);
-    }
-
-    /**
-     * Gets the order ID.
-     *
-     * @return The order ID.
-     */
-    public String getOrderId() {
+    public StringProperty orderIdProperty() {
         return orderId;
     }
 
-    /**
-     * Sets the order ID.
-     *
-     * @param orderId The order ID.
-     * @throws IllegalArgumentException If orderId is null or empty.
-     */
-    public void setOrderId(final String orderId) {
-        if ((orderId == null) || (orderId.isEmpty())) {
-            throw new IllegalArgumentException("orderId cannot be null or empty");
-        }
-        this.orderId = orderId;
+    public String getOrderId() {
+        return orderId.get();
     }
 
-    /**
-     * Gets the order date formatted as a String.
-     *
-     * @return The order date.
-     */
+    public StringProperty orderDateProperty() {
+        StringProperty stringProperty = new SimpleStringProperty();
+        stringProperty.bindBidirectional(orderDate, new LocalDateStringConverter());
+        return stringProperty;
+    }
+
     public String getOrderDate() {
-        return dateTimeFormatter.format(orderDate);
+        return orderDate.get().format(formatter);
     }
 
-    /**
-     * Sets the order date.
-     *
-     * @param orderDate The order date.
-     * @throws IllegalArgumentException If orderDate is null.
-     */
-    public void setOrderDate(final LocalDate orderDate) {
-        if (orderDate == null) {
-            throw new IllegalArgumentException("orderDate cannot be null");
-        }
-        this.orderDate = orderDate;
+    public StringProperty shipDateProperty() {
+        StringProperty stringProperty = new SimpleStringProperty();
+        stringProperty.bindBidirectional(shipDate, new LocalDateStringConverter());
+        return stringProperty;
     }
 
-    /**
-     * Gets the ship date formatted as a String.
-     *
-     * @return The ship date.
-     */
     public String getShipDate() {
-        return dateTimeFormatter.format(shipDate);
+        return shipDate.get().format(formatter);
     }
 
-    /**
-     * Sets the ship date.
-     *
-     * @param shipDate The ship date.
-     * @throws IllegalArgumentException If shipDate is null.
-     */
-    public void setShipDate(final LocalDate shipDate) {
-        if (shipDate == null) {
-            throw new IllegalArgumentException("shipDate cannot be null");
-        }
-        this.shipDate = shipDate;
-    }
-
-    /**
-     * Gets the address associated with this order.
-     *
-     * @return The address.
-     */
     public Address getAddress() {
-        return address;
+        return address.get();
     }
 
-    /**
-     * Sets the address for this order.
-     *
-     * @param address The shipping address.
-     * @throws IllegalArgumentException If address is null.
-     */
-    public void setAddress(final Address address) {
-        if (address == null) {
-            throw new IllegalArgumentException("address cannot be null");
-        }
-        this.address = address;
-    }
-
-    /**
-     * Gets the shipping mode for this order.
-     *
-     * @return The shipping mode.
-     */
     public String getShipMode() {
-        return shipMode;
+        return shipMode.get();
     }
 
-    /**
-     * Sets the shipping mode for this order.
-     *
-     * @param shipMode The shipping mode.
-     * @throws IllegalArgumentException If shipMode is null or empty.
-     */
-    public void setShipMode(final String shipMode) {
-        if ((shipMode == null) || (shipMode.isEmpty())) {
-            throw new IllegalArgumentException("shipMode cannot be null or empty");
-        }
-        this.shipMode = shipMode;
-    }
-
-    /**
-     * Gets the set of products in this order.
-     *
-     * @return The Map of products.
-     */
     public HashMap<String, Product> getProducts() {
-        return products;
+        return new HashMap<>(products.get());
     }
 
-    /**
-     * Sets the set of products for this order.
-     *
-     * @param products The map of products.
-     */
-    public void setProducts(final HashMap<String, Product> products) {
-        if (products == null) {
-            this.products = new HashMap<>(); // Corrected to assign a new HashMap to the class field
+    public boolean getIsReturn() {
+        return isReturn.get();
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId.set(orderId);
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate.set(orderDate);
+    }
+
+    public void setShipDate(LocalDate shipDate) {
+        this.shipDate.set(shipDate);
+    }
+
+    public void setAddress(Address address) {
+        this.address.set(address);
+    }
+
+    public void setShipMode(String shipMode) {
+        this.shipMode.set(shipMode);
+    }
+
+    public void setProducts(HashMap<String, Product> products) {
+        if (products != null) {
+            this.products.clear();
+            this.products.putAll(products);
         } else {
-            this.products = products;
+            this.products.clear();
         }
     }
 
-    /**
-     * Gets the return result of this order.
-     *
-     * @return The return result.
-     */
-    public boolean isReturn() {
-        return isReturn;
-    }
-
-    /**
-     * Sets the return result for this order.
-     *
-     * @param isReturn The return result.
-     */
-    public void setReturn(final boolean isReturn) {
-        this.isReturn = isReturn;
+    public void setIsReturn(boolean isReturn) {
+        this.isReturn.set(isReturn);
     }
 
     @Override
     public String toString() {
-        return "Id:" + this.orderId + 
-        "\nOrderDate:" + getOrderDate() + 
-        "\nShipDate:" + getShipDate() + 
-        "\nAddress:" + getAddress().toString() +
-        "\nShipMode:" + getShipMode() +
-        "\nProducts:" + getProducts().size()
-        ;
+        return "Order ID: " + orderId.get() +
+                "\nOrder Date: " + orderDate.get() +
+                "\nShip Date: " + shipDate.get() +
+                "\nAddress: " + address.get() +
+                "\nShip Mode: " + shipMode.get() +
+                "\nProducts: " + products.size() +
+                "\nReturn: " + isReturn.get();
     }
 }

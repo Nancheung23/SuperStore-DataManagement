@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -24,6 +25,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 public class App extends Application {
+    private File lastKnownDirectory = null;
+
     public static void main(String[] args) throws IOException {
         // javaFx
         Application.launch(args);
@@ -58,39 +61,87 @@ public class App extends Application {
         VBox vbox = new VBox(10);
         // center display
         vbox.setAlignment(Pos.CENTER);
-        Label label = new Label("Choose a CSV file:");
+        Label label = new Label("Choose data CSV file:");
         TextField filePathField = new TextField();
+        Label rLabel = new Label("Choose return CSV file:");
+        TextField rFilePathField = new TextField();
         filePathField.setEditable(false);
-        Button fileButton = new Button("Browse...");
+        Button fileButton = new Button("Browse data CSV...");
+        Button rFileButton = new Button("Browse return CSV...");
 
+        // Handlers for the data file button
         fileButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
+            if (lastKnownDirectory != null) {
+                fileChooser.setInitialDirectory(lastKnownDirectory);
+            }
             File selectedFile = fileChooser.showOpenDialog(primaryStage);
             if (selectedFile != null) {
                 filePathField.setText(selectedFile.getAbsolutePath());
-                FileDataProcessor fdp = new FileDataProcessor(
-                        selectedFile.getAbsolutePath());
-                FileDataProcessor rfdp = new FileDataProcessor(
-                        selectedFile.getAbsolutePath());
+                lastKnownDirectory = selectedFile.getParentFile();
+            }
+        });
+
+        // Handlers for the return file button
+        rFileButton.setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            if (lastKnownDirectory != null) {
+                fileChooser.setInitialDirectory(lastKnownDirectory);
+            }
+            File selectedFile = fileChooser.showOpenDialog(primaryStage);
+            if (selectedFile != null) {
+                rFilePathField.setText(selectedFile.getAbsolutePath());
+                lastKnownDirectory = selectedFile.getParentFile();
+            }
+        });
+
+        // Initialize button
+        Button initButton = new Button("Initialize");
+        initButton.setOnAction(e -> {
+            if (!filePathField.getText().isEmpty() && !rFilePathField.getText().isEmpty()) {
+                FileDataProcessor fdp = new FileDataProcessor(filePathField.getText());
+                FileDataProcessor rfdp = new FileDataProcessor(rFilePathField.getText());
                 InstanceGenerator ig;
                 try {
-                    // init
                     ig = new InstanceGenerator(fdp.processFile());
                     ig.initialization();
                     ig.setReturnMap(rfdp.processFile());
                     // table
                     HashMap<String, Customer> customerMap = ig.getCustomerMap();
                     TableView<Customer> customerTable = createCustomerTable(customerMap);
+                    customerTable.setRowFactory(tv -> {
+                        TableRow<Customer> row = new TableRow<>();
+                        row.setOnMouseClicked(event -> {
+                            if (!row.isEmpty() && event.getClickCount() == 2) {
+                                Customer clickedRow = row.getItem();
+                                showCustomerOrders(clickedRow, primaryStage);
+                            }
+                        });
+                        return row;
+                    });
                     root.setCenter(customerTable);
-                    primaryStage.show();
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+            } else {
+                // Handle the error condition here
+                System.out.println("Both data and return files must be selected.");
             }
         });
-
-        vbox.getChildren().addAll(label, filePathField, fileButton);
+        // Add components to the VBox
+        vbox.getChildren().addAll(label, filePathField, fileButton, rLabel, rFilePathField, rFileButton, initButton);
         root.setCenter(vbox);
+    }
+
+    private void showCustomerOrders(Customer customer, Stage primaryStage) {
+        Stage stage = new Stage();
+        TableView<Order> orderTable = new TableView<>();
+
+        orderTable.setItems(FXCollections.observableArrayList(customer.getOrders().values()));
+        Scene scene = new Scene(orderTable);
+        stage.setScene(scene);
+        stage.setTitle("Orders for " + customer.getCustomerName());
+        stage.show();
     }
 
     private TableView<Customer> createCustomerTable(HashMap<String, Customer> customerMap) {
@@ -113,4 +164,5 @@ public class App extends Application {
 
         return table;
     }
+
 }

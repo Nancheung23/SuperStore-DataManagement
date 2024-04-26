@@ -210,7 +210,7 @@ public class InstanceGenerator {
             for (String id : returnMap.keySet()) {
                 customerMap.values().forEach(c -> {
                     if (c.getOrders().containsKey(id)) {
-                        c.getOrders().get(id).setReturn(returnMap.get(id));
+                        c.getOrders().get(id).setIsReturn(returnMap.get(id));
                     }
                 });
             }
