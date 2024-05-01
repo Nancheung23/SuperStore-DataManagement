@@ -1,17 +1,26 @@
 package SuperStore;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * Represents a product with details such as ID, name, category,
  * sales, quantity, discount, and profit.
  */
 public class Product {
-    private String productId;
-    private String productName;
-    private CategoryInfo category;
-    private double sales;
-    private int quantity;
-    private double discount;
-    private double profit;
+    private final SimpleStringProperty productId = new SimpleStringProperty(this, "productId");
+    private final SimpleStringProperty productName = new SimpleStringProperty(this, "productName");
+    private final ObjectProperty<CategoryInfo> category = new SimpleObjectProperty<>(this, "category");
+    private final SimpleDoubleProperty sales = new SimpleDoubleProperty(this, "sales");
+    private final SimpleIntegerProperty quantity = new SimpleIntegerProperty(this, "quantity");
+    private final SimpleDoubleProperty discount = new SimpleDoubleProperty(this, "discount");
+    private final SimpleDoubleProperty profit = new SimpleDoubleProperty(this, "profit");
 
     /**
      * Constructs a new Product with the given details.
@@ -49,6 +58,10 @@ public class Product {
      * @return The product ID.
      */
     public String getProductId() {
+        return productId.get();
+    }
+
+    public StringProperty productIdProperty() {
         return productId;
     }
 
@@ -60,14 +73,14 @@ public class Product {
      *                                  or if productId does not have at least 15
      *                                  letters.
      */
-    public void setProductId(final String productId) {
+    public void setProductId(String productId) {
         if ((productId == null) || (productId.equals(""))) {
             throw new IllegalArgumentException("productId cannot be null or empty");
         }
         if (productId.length() < 15) {
             throw new IllegalArgumentException("productId has to have 15 letters");
         }
-        this.productId = productId;
+        this.productId.set(productId);
     }
 
     /**
@@ -76,6 +89,10 @@ public class Product {
      * @return The name of the product.
      */
     public String getProductName() {
+        return productName.get();
+    }
+
+    public StringProperty productNameProperty() {
         return productName;
     }
 
@@ -85,11 +102,11 @@ public class Product {
      * @param productName The name of the product.
      * @throws IllegalArgumentException if productName is null or empty.
      */
-    public void setProductName(final String productName) {
+    public void setProductName(String productName) {
         if ((productName == null) || (productName.equals(""))) {
             throw new IllegalArgumentException("productName cannot be null or empty");
         }
-        this.productName = productName;
+        this.productName.set(productName);
     }
 
     /**
@@ -98,7 +115,7 @@ public class Product {
      * @return The category information of the product.
      */
     public CategoryInfo getCategory() {
-        return category;
+        return category.get();
     }
 
     /**
@@ -107,11 +124,11 @@ public class Product {
      * @param category The category information of the product.
      * @throws IllegalArgumentException if category is null.
      */
-    public void setCategory(final CategoryInfo category) {
+    public void setCategory(CategoryInfo category) {
         if (category == null) {
             throw new IllegalArgumentException("category cannot be null");
         }
-        this.category = category;
+        this.category.set(category);
     }
 
     /**
@@ -120,6 +137,10 @@ public class Product {
      * @return The sales amount.
      */
     public double getSales() {
+        return sales.get();
+    }
+
+    public DoubleProperty salesProperty() {
         return sales;
     }
 
@@ -129,11 +150,11 @@ public class Product {
      * @param sales The sales amount.
      * @throws IllegalArgumentException if sales is less than or equal to 0.
      */
-    public void setSales(final double sales) {
+    public void setSales(double sales) {
         if (sales <= 0) {
             throw new IllegalArgumentException("sales cannot be lower than 0");
         }
-        this.sales = sales;
+        this.sales.set(sales);
     }
 
     /**
@@ -142,6 +163,10 @@ public class Product {
      * @return The quantity sold.
      */
     public int getQuantity() {
+        return quantity.get();
+    }
+
+    public IntegerProperty quantityProperty() {
         return quantity;
     }
 
@@ -151,11 +176,11 @@ public class Product {
      * @param quantity The quantity sold.
      * @throws IllegalArgumentException if quantity is less than or equal to 0.
      */
-    public void setQuantity(final int quantity) {
+    public void setQuantity(int quantity) {
         if (quantity <= 0) {
             throw new IllegalArgumentException("quantity cannot be lower than 0");
         }
-        this.quantity = quantity;
+        this.quantity.set(quantity);
     }
 
     /**
@@ -164,6 +189,10 @@ public class Product {
      * @return The discount percentage.
      */
     public double getDiscount() {
+        return discount.get();
+    }
+
+    public DoubleProperty discounProperty() {
         return discount;
     }
 
@@ -172,8 +201,8 @@ public class Product {
      *
      * @param discount The discount percentage.
      */
-    public void setDiscount(final double discount) {
-        this.discount = discount;
+    public void setDiscount(double discount) {
+        this.discount.set(discount);
     }
 
     /**
@@ -182,6 +211,10 @@ public class Product {
      * @return The profit amount.
      */
     public double getProfit() {
+        return profit.get();
+    }
+
+    public DoubleProperty profitProperty() {
         return profit;
     }
 
@@ -190,8 +223,8 @@ public class Product {
      *
      * @param profit The profit amount.
      */
-    public void setProfit(final double profit) {
-        this.profit = profit;
+    public void setProfit(double profit) {
+        this.profit.set(profit);
     }
 
     @Override

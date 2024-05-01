@@ -1,15 +1,19 @@
 package SuperStore;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 /**
  * Represents a postal address, including details such as country, postal code,
  * region, state, and city.
  */
 public class Address {
-    private String country;
-    private int postalCode;
-    private String region;
-    private String state;
-    private String city;
+    private final SimpleStringProperty country = new SimpleStringProperty(this, "country");
+    private final SimpleIntegerProperty postalCode = new SimpleIntegerProperty(this, "postalCode");
+    private final SimpleStringProperty region = new SimpleStringProperty(this, "region");
+    private final SimpleStringProperty state = new SimpleStringProperty(this, "state");
+    private final SimpleStringProperty city = new SimpleStringProperty(this, "city");
 
     /**
      * Constructs a new Address with the specified country, postal code, region,
@@ -45,6 +49,10 @@ public class Address {
      * @return The country of the address.
      */
     public String getCountry() {
+        return country.get();
+    }
+
+    public StringProperty countryProperty() {
         return country;
     }
 
@@ -54,11 +62,11 @@ public class Address {
      * @param country The country of the address.
      * @throws IllegalArgumentException If country is null or empty.
      */
-    public void setCountry(final String country) {
+    public void setCountry(String country) {
         if ((country == null) || (country.isEmpty())) {
             throw new IllegalArgumentException("country cannot be null or empty");
         }
-        this.country = country;
+        this.country.set(country);
     }
 
     /**
@@ -67,6 +75,10 @@ public class Address {
      * @return The postal code of the address.
      */
     public int getPostalCode() {
+        return postalCode.get();
+    }
+
+    public SimpleIntegerProperty postalCodeProperty() {
         return postalCode;
     }
 
@@ -75,8 +87,8 @@ public class Address {
      *
      * @param postalCode The postal code of the address.
      */
-    public void setPostalCode(final int postalCode) {
-        this.postalCode = postalCode;
+    public void setPostalCode(int postalCode) {
+        this.postalCode.set(postalCode);
     }
 
     /**
@@ -85,6 +97,10 @@ public class Address {
      * @return The region of the address.
      */
     public String getRegion() {
+        return region.get();
+    }
+
+    public StringProperty regionProperty() {
         return region;
     }
 
@@ -94,11 +110,11 @@ public class Address {
      * @param region The region of the address.
      * @throws IllegalArgumentException If region is null or empty.
      */
-    public void setRegion(final String region) {
+    public void setRegion(String region) {
         if ((region == null) || (region.isEmpty())) {
             throw new IllegalArgumentException("region cannot be null or empty");
         }
-        this.region = region;
+        this.region.set(region);
     }
 
     /**
@@ -107,6 +123,10 @@ public class Address {
      * @return The state of the address.
      */
     public String getState() {
+        return state.get();
+    }
+
+    public StringProperty stateProperty() {
         return state;
     }
 
@@ -116,11 +136,11 @@ public class Address {
      * @param state The state of the address.
      * @throws IllegalArgumentException If state is null or empty.
      */
-    public void setState(final String state) {
+    public void setState(String state) {
         if ((state == null) || (state.isEmpty())) {
             throw new IllegalArgumentException("state cannot be null or empty");
         }
-        this.state = state;
+        this.state.set(state);
     }
 
     /**
@@ -129,6 +149,10 @@ public class Address {
      * @return The city of the address.
      */
     public String getCity() {
+        return city.get();
+    }
+
+    public StringProperty cityProperty() {
         return city;
     }
 
@@ -142,7 +166,7 @@ public class Address {
         if ((city == null) || (city.isEmpty())) {
             throw new IllegalArgumentException("city cannot be null or empty");
         }
-        this.city = city;
+        this.city.set(city);
     }
 
     @Override

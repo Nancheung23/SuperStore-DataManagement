@@ -1,26 +1,21 @@
 package SuperStore;
 
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableMap;
 import javafx.util.converter.LocalDateStringConverter;
-import javafx.beans.property.adapter.JavaBeanStringPropertyBuilder;
-import javafx.util.converter.LocalDateStringConverter;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class Order {
-    private final StringProperty orderId = new SimpleStringProperty(this, "orderId");
+    private final SimpleStringProperty orderId = new SimpleStringProperty(this, "orderId");
     private final ObjectProperty<LocalDate> orderDate = new SimpleObjectProperty<>(this, "orderDate");
     private final ObjectProperty<LocalDate> shipDate = new SimpleObjectProperty<>(this, "shipDate");
     private final ObjectProperty<Address> address = new SimpleObjectProperty<>(this, "address");
-    private final StringProperty shipMode = new SimpleStringProperty(this, "shipMode");
-    private final MapProperty<String, Product> products = new SimpleMapProperty<>(this, "products",
-            FXCollections.observableHashMap());
-    private final BooleanProperty isReturn = new SimpleBooleanProperty(this, "isReturn");
+    private final SimpleStringProperty shipMode = new SimpleStringProperty(this, "shipMode");
+    private final ObservableMap<String, Product> products = FXCollections.observableHashMap();
+    private final SimpleBooleanProperty isReturn = new SimpleBooleanProperty(this, "isReturn");
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
     // Constructors
@@ -74,8 +69,8 @@ public class Order {
         return shipMode.get();
     }
 
-    public HashMap<String, Product> getProducts() {
-        return new HashMap<>(products.get());
+    public ObservableMap<String, Product> getProducts() {
+        return products;
     }
 
     public boolean getIsReturn() {
