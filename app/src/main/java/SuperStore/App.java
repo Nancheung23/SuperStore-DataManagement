@@ -161,11 +161,12 @@ public class App extends Application {
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getClickCount() == 2) {
                     Customer clickedRow = row.getItem();
-                    showCustomerOrders(clickedRow, primaryStage);
+                    showCustomerOrders(clickedRow, primaryStage, customerMap);
                 }
             });
             return row;
         });
+        ObservableList<Customer> masterData = FXCollections.observableArrayList(customerMap.values());
         Button statsButton = new Button("General");
         statsButton.setOnAction(e -> showStatistics(customerMap));
         Button customerButton = new Button("Customer");
@@ -176,15 +177,40 @@ public class App extends Application {
         salesPerYearButton.setOnAction(e -> showSalesPerYearStatistics(customerMap));
         Button salesPerRegionButton = new Button("Sales (Region)");
         salesPerRegionButton.setOnAction(e -> showSalesPerRegionStatistics(customerMap));
-        HBox buttonBox = new HBox(10); 
-        buttonBox.getChildren().addAll(statsButton, customerButton, segmentButton, salesPerYearButton, salesPerRegionButton);
+
+        TextField filterField = new TextField();
+        filterField.setPromptText("Filter by ID or Name");
+
+        // Filter function
+        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+            customerTable.setItems(masterData.filtered(customer -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (customer.getCustomerName().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches customer name
+                } else if (customer.getCustomerId().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches customer ID
+                }
+                return false; // Does not match
+            }));
+        });
+        // Layout
+        HBox filterBox = new HBox(10);
+        filterBox.getChildren().addAll(new Label("Search:"), filterField);
+
+        HBox buttonBox = new HBox(10);
+        buttonBox.getChildren().addAll(statsButton, customerButton, segmentButton, salesPerYearButton,
+                salesPerRegionButton);
         VBox vbox = new VBox(5);
-        vbox.getChildren().addAll(buttonBox, customerTable);
+        vbox.getChildren().addAll(buttonBox, filterBox, customerTable);
         root.setCenter(vbox);
     }
 
-    private void showCustomerOrders(Customer customer, Stage primaryStage) {
+    private void showCustomerOrders(Customer customer, Stage primaryStage, HashMap<String, Customer> customerMap) {
         Stage stage = new Stage();
+        ObservableList<Order> masterData = FXCollections.observableArrayList(customer.getOrders().values());
         TableView<Order> orderTable = createOrderTable(customer.getOrders());
         orderTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         orderTable.setRowFactory(tv -> {
@@ -192,22 +218,49 @@ public class App extends Application {
             row.setOnMouseClicked(event -> {
                 if (!row.isEmpty() && event.getClickCount() == 2) {
                     Order clickedOrder = row.getItem();
-                    showOrderProducts(clickedOrder, stage);
+                    showOrderProducts(clickedOrder, stage, customerMap);
                 }
             });
             return row;
         });
-        Scene scene = new Scene(orderTable);
+        TextField filterField = new TextField();
+        filterField.setPromptText("Filter by ID");
+
+        // Filter function
+        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+            orderTable.setItems(masterData.filtered(order -> {
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (order.getOrderId().toLowerCase().contains(lowerCaseFilter)) {
+                    return true; // Filter matches customer name
+                }
+                return false; // Does not match
+            }));
+        });
+        // Layout
+        Button orderButton = new Button("Total sales for Customer");
+        orderButton.setOnAction(e -> showTotalSalesPerCustomer(customerMap, customer));
+        HBox filterBox = new HBox(10);
+        filterBox.getChildren().addAll(new Label("Search:"), filterField, orderButton);
+        VBox vbox = new VBox(5);
+        vbox.getChildren().addAll(filterBox, orderTable);
+        Scene scene = new Scene(vbox);
         stage.setScene(scene);
         stage.setTitle("Orders for " + customer.getCustomerName());
         stage.show();
     }
 
-    private void showOrderProducts(Order order, Stage parentStage) {
+    private void showOrderProducts(Order order, Stage parentStage, HashMap<String, Customer> customerMap) {
         TableView<Product> productTable = createProductTable(order.getProducts());
         productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        Button productButton = new Button("Total Sales for Order");
+        productButton.setOnAction(e -> showTotalSalesPerOrder(customerMap, order));
+        VBox vbox = new VBox(5);
+        vbox.getChildren().addAll(productButton, productTable);
         Stage stage = new Stage();
-        Scene scene = new Scene(productTable);
+        Scene scene = new Scene(vbox);
         stage.setScene(scene);
         stage.setTitle("Products for Order ID: " + order.getOrderId());
         stage.initOwner(parentStage);
@@ -455,5 +508,21 @@ public class App extends Application {
         Scene scene = new Scene(layout, 300, 450);
         statisticsStage.setScene(scene);
         statisticsStage.show();
+    }
+
+    public void showTotalSalesPerCustomer(HashMap<String, Customer> customerMap, Customer customer) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Statistics");
+        alert.setHeaderText(null);
+        alert.setContentText("Total sales for Customer: " + CustomerMapUtils.getTotalSalesForCustomer(customerMap, customer.getCustomerId()));
+        alert.showAndWait();
+    }
+
+    public void showTotalSalesPerOrder(HashMap<String, Customer> customerMap, Order order) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Statistics");
+        alert.setHeaderText(null);
+        alert.setContentText("Total sales for Order: " + CustomerMapUtils.getTotalSalesForOrder(customerMap, order.getOrderId()));
+        alert.showAndWait();
     }
 }
