@@ -171,10 +171,10 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Country:" + this.country +
-        "\nState:" + this.state +  
-        "\nRegion:" + this.region + 
-        "\nCity:" + this.city + 
-        "\nPostalCode:" + this.postalCode;
+        return "Country: " + (country.get() == null ? "Not set" : country.get()) +
+            "\nState: " + (state.get() == null ? "Not set" : state.get()) +
+            "\nRegion: " + (region.get() == null ? "Not set" : region.get()) +
+            "\nCity: " + (city.get() == null ? "Not set" : city.get()) +
+            "\nPostalCode: " + postalCode.get(); // Assuming postalCode is always set due to being an int
     }
 }

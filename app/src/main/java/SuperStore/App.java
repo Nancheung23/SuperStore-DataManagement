@@ -4,24 +4,27 @@
 package SuperStore;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
-
-import org.checkerframework.checker.units.qual.t;
-
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import java.io.File;
+import java.io.InputStream;
+import java.io.FileInputStream;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
@@ -64,15 +67,28 @@ public class App extends Application {
         vbox.setAlignment(Pos.CENTER);
         Label label = new Label("Choose data CSV file:");
         TextField filePathField = new TextField();
+        filePathField.setEditable(false);
         Label rLabel = new Label("Choose return CSV file:");
         TextField rFilePathField = new TextField();
-        filePathField.setEditable(false);
+        rFilePathField.setEditable(false);
+        InputStream dataStream = getClass().getResourceAsStream("/SuperStoreOrders.csv");
+        InputStream returnStream = getClass().getResourceAsStream("/SuperStoreReturns.csv");
+        if (dataStream != null && returnStream != null) {
+            filePathField.setText("Resource loaded: SuperStoreOrders.csv");
+            rFilePathField.setText("Resource loaded: SuperStoreReturns.csv");
+        } else {
+            filePathField.setText("Failed to load default resources");
+            rFilePathField.setText("Failed to load default resources");
+        }
+
+        // user select
         Button fileButton = new Button("Browse data CSV...");
         Button rFileButton = new Button("Browse return CSV...");
 
         // Handlers for the data file button
         fileButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
+            configureFileChooser(fileChooser);
             if (lastKnownDirectory != null) {
                 fileChooser.setInitialDirectory(lastKnownDirectory);
             }
@@ -86,6 +102,7 @@ public class App extends Application {
         // Handlers for the return file button
         rFileButton.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
+            configureFileChooser(fileChooser);
             if (lastKnownDirectory != null) {
                 fileChooser.setInitialDirectory(lastKnownDirectory);
             }
@@ -100,11 +117,10 @@ public class App extends Application {
         Button initButton = new Button("Initialize");
         initButton.setOnAction(e -> {
             if (!filePathField.getText().isEmpty() && !rFilePathField.getText().isEmpty()) {
-                FileDataProcessor fdp = new FileDataProcessor(filePathField.getText());
-                FileDataProcessor rfdp = new FileDataProcessor(rFilePathField.getText());
-                InstanceGenerator ig;
                 try {
-                    ig = new InstanceGenerator(fdp.processFile());
+                    FileDataProcessor fdp = new FileDataProcessor(filePathField.getText());
+                    FileDataProcessor rfdp = new FileDataProcessor(rFilePathField.getText());
+                    InstanceGenerator ig = new InstanceGenerator(fdp.processFile());
                     ig.initialization();
                     ig.setReturnMap(rfdp.processFile());
                     // table
@@ -112,15 +128,23 @@ public class App extends Application {
                     showCustomerTable(root, primaryStage, customerMap);
                 } catch (IOException e1) {
                     e1.printStackTrace();
+                    System.out.println("Error processing files: " + e1.getMessage());
                 }
             } else {
-                // Handle the error condition here
                 System.out.println("Both data and return files must be selected.");
             }
         });
         // Add components to the VBox
         vbox.getChildren().addAll(label, filePathField, fileButton, rLabel, rFilePathField, rFileButton, initButton);
         root.setCenter(vbox);
+    }
+
+    // user file chooser (default selected)
+    private void configureFileChooser(FileChooser fileChooser) {
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("CSV Files", "*.csv"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"));
     }
 
     private void showCustomerTable(BorderPane root, Stage primaryStage, HashMap<String, Customer> customerMap) {
@@ -193,13 +217,39 @@ public class App extends Application {
         shipDateColumn.setCellValueFactory(new PropertyValueFactory<>("shipDate"));
         TableColumn<Order, Boolean> isReturnColumn = new TableColumn<>("Is Return");
         isReturnColumn.setCellValueFactory(new PropertyValueFactory<>("isReturn"));
+        TableColumn<Order, Address> addressColumn = new TableColumn<>("Address");
+        addressColumn.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue().getAddress()));
+        addressColumn.setCellFactory(param -> new TableCell<Order, Address>() {
+            private final Button detailButton = new Button("Detail");
+
+            @Override
+            protected void updateItem(Address address, boolean empty) {
+                super.updateItem(address, empty);
+
+                if (empty || address == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(detailButton);
+                    detailButton.setOnAction(event -> showAddressDetails(address));
+                }
+            }
+        });
         table.getColumns().add(idColumn);
         table.getColumns().add(orderDateColumn);
         table.getColumns().add(shipDateColumn);
         table.getColumns().add(isReturnColumn);
+        table.getColumns().add(addressColumn);
         ObservableList<Order> data = FXCollections.observableArrayList(observableMap.values());
         table.setItems(data);
         return table;
+    }
+
+    private void showAddressDetails(Address address) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Address Details");
+        alert.setHeaderText(null);
+        alert.setContentText("Detail:" + address);
+        alert.showAndWait();
     }
 
     private TableView<Product> createProductTable(ObservableMap<String, Product> observableMap) {
