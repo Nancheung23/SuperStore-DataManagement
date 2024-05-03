@@ -5,6 +5,8 @@ package SuperStore;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import com.google.common.collect.Table;
@@ -27,9 +29,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
@@ -177,6 +183,8 @@ public class App extends Application {
         salesPerYearButton.setOnAction(e -> showSalesPerYearStatistics(customerMap));
         Button salesPerRegionButton = new Button("Sales (Region)");
         salesPerRegionButton.setOnAction(e -> showSalesPerRegionStatistics(customerMap));
+        Button reportButton = new Button("Generate Sales Report");
+        reportButton.setOnAction(e -> generateSalesReport(customerMap));
 
         TextField filterField = new TextField();
         filterField.setPromptText("Filter by ID or Name");
@@ -204,7 +212,7 @@ public class App extends Application {
         buttonBox.getChildren().addAll(statsButton, customerButton, segmentButton, salesPerYearButton,
                 salesPerRegionButton);
         VBox vbox = new VBox(5);
-        vbox.getChildren().addAll(buttonBox, filterBox, customerTable);
+        vbox.getChildren().addAll(buttonBox, filterBox, customerTable, reportButton);
         root.setCenter(vbox);
     }
 
@@ -514,7 +522,8 @@ public class App extends Application {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Statistics");
         alert.setHeaderText(null);
-        alert.setContentText("Total sales for Customer: " + CustomerMapUtils.getTotalSalesForCustomer(customerMap, customer.getCustomerId()));
+        alert.setContentText("Total sales for Customer: "
+                + CustomerMapUtils.getTotalSalesForCustomer(customerMap, customer.getCustomerId()));
         alert.showAndWait();
     }
 
@@ -522,7 +531,86 @@ public class App extends Application {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Statistics");
         alert.setHeaderText(null);
-        alert.setContentText("Total sales for Order: " + CustomerMapUtils.getTotalSalesForOrder(customerMap, order.getOrderId()));
+        alert.setContentText(
+                "Total sales for Order: " + CustomerMapUtils.getTotalSalesForOrder(customerMap, order.getOrderId()));
         alert.showAndWait();
+    }
+
+    private void generateSalesReport(HashMap<String, Customer> customerMap) {
+        String fileName = "sales-report_" + LocalDate.now().format(DateTimeFormatter.ISO_DATE) + ".txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+            writer.write("Sales Report - Generated on " + LocalDate.now());
+            writer.newLine();
+            
+            writer.newLine();
+            writer.write("Total Sales: $" + CustomerMapUtils.getTotalSales(customerMap));
+            writer.newLine();
+
+            writer.newLine();
+            writer.write("Total Customers: $" + CustomerMapUtils.calculateCustomersNumber(customerMap));
+            writer.newLine();
+
+            writer.newLine();
+            writer.write("Total Orders: $" + CustomerMapUtils.calculateOrdersNumber(customerMap));
+            writer.newLine();
+
+            writer.newLine();
+            writer.write("Total Products: $" + CustomerMapUtils.calculateProductsNumber(customerMap));
+            writer.newLine();
+
+            writer.newLine();
+            writer.write("Customer Count per State:");
+            writer.newLine();
+
+            HashMap<String, Integer> customersPerState = CustomerMapUtils.getAmountCustomerPerFilter(customerMap,
+                    "State");
+            for (String state : customersPerState.keySet()) {
+                writer.write(state + ": " + customersPerState.get(state));
+                writer.newLine();
+            }
+
+            writer.newLine();
+            writer.write("Customer Count per Segment:");
+            writer.newLine();
+
+            HashMap<String, Integer> customersPerSegment = CustomerMapUtils.getAmountOfSegment(customerMap);
+            for (String segment : customersPerSegment.keySet()) {
+                writer.write(segment + ": " + customersPerSegment.get(segment));
+                writer.newLine();
+            }
+
+            writer.newLine();
+            writer.write("Total Sales per Year:");
+            writer.newLine();
+
+            HashMap<String, Double> salesPerYear = CustomerMapUtils.getTotalSalesPerFilter(customerMap, "Year");
+            for (String year : salesPerYear.keySet()) {
+                writer.write(year + ": $" + String.format("%.2f", salesPerYear.get(year)));
+                writer.newLine();
+            }
+
+            writer.newLine();
+            writer.write("Total Sales per Region:");
+            writer.newLine();
+
+            HashMap<String, Double> salesPerRegion = CustomerMapUtils.getTotalSalesPerFilter(customerMap, "Region");
+            for (String region : salesPerRegion.keySet()) {
+                writer.write(region + ": $" + String.format("%.2f", salesPerRegion.get(region)));
+                writer.newLine();
+            }
+
+            writer.flush();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Report Generated");
+            alert.setHeaderText(null);
+            alert.setContentText("The sales report has been generated successfully.");
+            alert.showAndWait();
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Failed to Generate Report");
+            alert.setContentText("An error occurred while generating the report: " + e.getMessage());
+            alert.showAndWait();
+        }
     }
 }
