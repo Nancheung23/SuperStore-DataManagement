@@ -48,3 +48,19 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+
+tasks.jar {
+    destinationDirectory = file("$buildDir/")
+    archiveBaseName = 'SuperStore'
+    archiveVersion = '1.0.0-alpha'
+    from sourceSets.main.output
+    // Define the manifest for the JAR file.
+    manifest {
+        attributes(
+            'Implementation-Title': 'SuperStore.App',
+            'Implementation-Version': '1.0.0-alpha',
+            'Main-Class': 'com.SuperStore.MainClass'
+        )
+    }
+}

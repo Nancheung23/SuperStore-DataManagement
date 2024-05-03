@@ -6,9 +6,12 @@ package SuperStore;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.checkerframework.checker.units.qual.t;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,9 +37,8 @@ public class App extends Application {
 
     @Override
     public void init() throws Exception {
-        // TODO Auto-generated method stub
         super.init();
-        System.out.println("DB session// threadpool");
+        System.out.println("GUI Initialization...");
     }
 
     @Override
@@ -51,9 +53,8 @@ public class App extends Application {
 
     @Override
     public void stop() throws Exception {
-        // TODO Auto-generated method stub
         super.stop();
-        System.out.println("stop");
+        System.out.println("Program is stopped");
     }
 
     // GUI
@@ -108,18 +109,7 @@ public class App extends Application {
                     ig.setReturnMap(rfdp.processFile());
                     // table
                     HashMap<String, Customer> customerMap = ig.getCustomerMap();
-                    TableView<Customer> customerTable = createCustomerTable(customerMap);
-                    customerTable.setRowFactory(tv -> {
-                        TableRow<Customer> row = new TableRow<>();
-                        row.setOnMouseClicked(event -> {
-                            if (!row.isEmpty() && event.getClickCount() == 2) {
-                                Customer clickedRow = row.getItem();
-                                showCustomerOrders(clickedRow, primaryStage);
-                            }
-                        });
-                        return row;
-                    });
-                    root.setCenter(customerTable);
+                    showCustomerTable(root, primaryStage, customerMap);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
@@ -133,14 +123,47 @@ public class App extends Application {
         root.setCenter(vbox);
     }
 
+    private void showCustomerTable(BorderPane root, Stage primaryStage, HashMap<String, Customer> customerMap) {
+        TableView<Customer> customerTable = createCustomerTable(customerMap);
+        customerTable.setRowFactory(tv -> {
+            TableRow<Customer> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    Customer clickedRow = row.getItem();
+                    showCustomerOrders(clickedRow, primaryStage);
+                }
+            });
+            return row;
+        });
+        root.setCenter(customerTable);
+    }
+
     private void showCustomerOrders(Customer customer, Stage primaryStage) {
         Stage stage = new Stage();
-        TableView<Order> orderTable = new TableView<>();
-
-        orderTable.setItems(FXCollections.observableArrayList(customer.getOrders().values()));
+        TableView<Order> orderTable = createOrderTable(customer.getOrders());
+        orderTable.setRowFactory(tv -> {
+            TableRow<Order> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (!row.isEmpty() && event.getClickCount() == 2) {
+                    Order clickedOrder = row.getItem();
+                    showOrderProducts(clickedOrder, stage);
+                }
+            });
+            return row;
+        });
         Scene scene = new Scene(orderTable);
         stage.setScene(scene);
         stage.setTitle("Orders for " + customer.getCustomerName());
+        stage.show();
+    }
+
+    private void showOrderProducts(Order order, Stage parentStage) {
+        TableView<Product> productTable = createProductTable(order.getProducts());
+        Stage stage = new Stage();
+        Scene scene = new Scene(productTable);
+        stage.setScene(scene);
+        stage.setTitle("Products for Order ID: " + order.getOrderId());
+        stage.initOwner(parentStage);
         stage.show();
     }
 
@@ -148,21 +171,59 @@ public class App extends Application {
         TableView<Customer> table = new TableView<>();
         TableColumn<Customer, String> idColumn = new TableColumn<>("Customer ID");
         idColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
-
         TableColumn<Customer, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("customerName"));
-
         TableColumn<Customer, String> segmentColumn = new TableColumn<>("Segment");
         segmentColumn.setCellValueFactory(new PropertyValueFactory<>("segment"));
-
         table.getColumns().add(idColumn);
         table.getColumns().add(nameColumn);
         table.getColumns().add(segmentColumn);
-
         ObservableList<Customer> data = FXCollections.observableArrayList(customerMap.values());
         table.setItems(data);
-
         return table;
     }
 
+    private TableView<Order> createOrderTable(ObservableMap<String, Order> observableMap) {
+        TableView<Order> table = new TableView<>();
+        TableColumn<Order, String> idColumn = new TableColumn<>("Order ID");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
+        TableColumn<Order, String> orderDateColumn = new TableColumn<>("Order Date");
+        orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
+        TableColumn<Order, String> shipDateColumn = new TableColumn<>("Ship Date");
+        shipDateColumn.setCellValueFactory(new PropertyValueFactory<>("shipDate"));
+        TableColumn<Order, Boolean> isReturnColumn = new TableColumn<>("Is Return");
+        isReturnColumn.setCellValueFactory(new PropertyValueFactory<>("isReturn"));
+        table.getColumns().add(idColumn);
+        table.getColumns().add(orderDateColumn);
+        table.getColumns().add(shipDateColumn);
+        table.getColumns().add(isReturnColumn);
+        ObservableList<Order> data = FXCollections.observableArrayList(observableMap.values());
+        table.setItems(data);
+        return table;
+    }
+
+    private TableView<Product> createProductTable(ObservableMap<String, Product> observableMap) {
+        TableView<Product> table = new TableView<>();
+        TableColumn<Product, String> idColumn = new TableColumn<>("Product ID");
+        idColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
+        TableColumn<Product, String> nameColumn = new TableColumn<>("Product Name");
+        nameColumn.setCellValueFactory(new PropertyValueFactory<>("productName"));
+        TableColumn<Product, Double> salesColumn = new TableColumn<>("Sales");
+        salesColumn.setCellValueFactory(new PropertyValueFactory<>("sales"));
+        TableColumn<Product, Double> profitColumn = new TableColumn<>("Profit");
+        profitColumn.setCellValueFactory(new PropertyValueFactory<>("profit"));
+        TableColumn<Product, Double> discountColumn = new TableColumn<>("Discount");
+        discountColumn.setCellValueFactory(new PropertyValueFactory<>("discount"));
+        TableColumn<Product, Double> quantityColumn = new TableColumn<>("Quantity");
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        table.getColumns().add(idColumn);
+        table.getColumns().add(nameColumn);
+        table.getColumns().add(salesColumn);
+        table.getColumns().add(profitColumn);
+        table.getColumns().add(discountColumn);
+        table.getColumns().add(quantityColumn);
+        ObservableList<Product> data = FXCollections.observableArrayList(observableMap.values());
+        table.setItems(data);
+        return table;
+    }
 }
