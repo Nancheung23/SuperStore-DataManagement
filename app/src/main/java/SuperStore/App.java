@@ -25,6 +25,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import java.io.File;
 import java.io.InputStream;
@@ -130,6 +131,7 @@ public class App extends Application {
                     // table
                     HashMap<String, Customer> customerMap = ig.getCustomerMap();
                     showCustomerTable(root, primaryStage, customerMap);
+
                 } catch (IOException e1) {
                     e1.printStackTrace();
                     System.out.println("Error processing files: " + e1.getMessage());
@@ -164,7 +166,21 @@ public class App extends Application {
             });
             return row;
         });
-        root.setCenter(customerTable);
+        Button statsButton = new Button("General");
+        statsButton.setOnAction(e -> showStatistics(customerMap));
+        Button customerButton = new Button("Customer");
+        customerButton.setOnAction(e -> showCustomerStatistics(customerMap));
+        Button segmentButton = new Button("Segment");
+        segmentButton.setOnAction(e -> showSegmentStatistics(customerMap));
+        Button salesPerYearButton = new Button("Sales (Year)");
+        salesPerYearButton.setOnAction(e -> showSalesPerYearStatistics(customerMap));
+        Button salesPerRegionButton = new Button("Sales (Region)");
+        salesPerRegionButton.setOnAction(e -> showSalesPerRegionStatistics(customerMap));
+        HBox buttonBox = new HBox(10); 
+        buttonBox.getChildren().addAll(statsButton, customerButton, segmentButton, salesPerYearButton, salesPerRegionButton);
+        VBox vbox = new VBox(5);
+        vbox.getChildren().addAll(buttonBox, customerTable);
+        root.setCenter(vbox);
     }
 
     private void showCustomerOrders(Customer customer, Stage primaryStage) {
@@ -292,5 +308,152 @@ public class App extends Application {
         ObservableList<Product> data = FXCollections.observableArrayList(observableMap.values());
         table.setItems(data);
         return table;
+    }
+
+    public void showStatistics(HashMap<String, Customer> customerMap) {
+        Stage statisticsStage = new Stage();
+        statisticsStage.setTitle("Statistics");
+
+        VBox layout = new VBox(10);
+        layout.setPadding(new javafx.geometry.Insets(10));
+
+        int totalCustomers = CustomerMapUtils.calculateCustomersNumber(customerMap);
+        int totalOrders = CustomerMapUtils.calculateOrdersNumber(customerMap);
+        int totalProducts = CustomerMapUtils.calculateProductsNumber(customerMap);
+        Customer bestCustomer = CustomerMapUtils.getBestCustomer(customerMap);
+        double totalSales = CustomerMapUtils.getTotalSales(customerMap);
+        double averageSales = CustomerMapUtils.getAverageSalesForAllOrders(customerMap);
+
+        Label customerLabel = new Label("Total Customers: " + totalCustomers);
+        Label orderLabel = new Label("Total Orders: " + totalOrders);
+        Label productLabel = new Label("Total Products: " + totalProducts);
+        Label bestCustomerLabel = new Label("Best Customer: " + bestCustomer.getCustomerName());
+        Label salesLabel = new Label(String.format("Total Sales: $%.2f", totalSales));
+        Label averageSalesLabel = new Label(String.format("Average Sales (per Order): $%.2f", averageSales));
+
+        layout.getChildren().addAll(customerLabel, orderLabel, productLabel,
+                bestCustomerLabel, salesLabel, averageSalesLabel);
+
+        Scene scene = new Scene(layout, 300, 200);
+        statisticsStage.setScene(scene);
+        statisticsStage.show();
+    }
+
+    public void showCustomerStatistics(HashMap<String, Customer> customerMap) {
+        Stage statisticsStage = new Stage();
+        statisticsStage.setTitle("Customer Statistics by State");
+        VBox layout = new VBox(10);
+        layout.setPadding(new javafx.geometry.Insets(10));
+        TableView<propertyCustomerStat> tableView = new TableView<>();
+        TableColumn<propertyCustomerStat, String> stateColumn = new TableColumn<>("State");
+        TableColumn<propertyCustomerStat, Number> numberColumn = new TableColumn<>("Number of Customers");
+        stateColumn.setCellValueFactory(cellData -> cellData.getValue().propertyProperty());
+        numberColumn.setCellValueFactory(cellData -> cellData.getValue().numberProperty());
+        tableView.getColumns().add(stateColumn);
+        tableView.getColumns().add(numberColumn);
+        HashMap<String, Integer> customersPerState = CustomerMapUtils.getAmountCustomerPerFilter(customerMap, "State");
+        ObservableList<propertyCustomerStat> tableData = FXCollections.observableArrayList();
+        customersPerState.forEach((state, number) -> {
+            tableData.add(new propertyCustomerStat(state, number));
+        });
+        tableView.setItems(tableData);
+        layout.getChildren().add(tableView);
+        Scene scene = new Scene(layout, 300, 450);
+        statisticsStage.setScene(scene);
+        statisticsStage.show();
+    }
+
+    public void showSegmentStatistics(HashMap<String, Customer> customerMap) {
+        Stage statisticsStage = new Stage();
+        statisticsStage.setTitle("Customer Statistics by Segment");
+        VBox layout = new VBox(10);
+        layout.setPadding(new javafx.geometry.Insets(10));
+        TableView<propertyCustomerStat> tableView = new TableView<>();
+        TableColumn<propertyCustomerStat, String> segmentColumn = new TableColumn<>("Segment");
+        TableColumn<propertyCustomerStat, Number> numberColumn = new TableColumn<>("Number of Customers");
+        segmentColumn.setCellValueFactory(cellData -> cellData.getValue().propertyProperty());
+        numberColumn.setCellValueFactory(cellData -> cellData.getValue().numberProperty());
+        tableView.getColumns().add(segmentColumn);
+        tableView.getColumns().add(numberColumn);
+        HashMap<String, Integer> customersPerSegment = CustomerMapUtils.getAmountOfSegment(customerMap);
+        ObservableList<propertyCustomerStat> tableData = FXCollections.observableArrayList();
+        customersPerSegment.forEach((segment, number) -> {
+            tableData.add(new propertyCustomerStat(segment, number));
+        });
+        tableView.setItems(tableData);
+        layout.getChildren().add(tableView);
+        Scene scene = new Scene(layout, 300, 450);
+        statisticsStage.setScene(scene);
+        statisticsStage.show();
+    }
+
+    public void showSalesPerYearStatistics(HashMap<String, Customer> customerMap) {
+        Stage statisticsStage = new Stage();
+        statisticsStage.setTitle("Total sales per year");
+        VBox layout = new VBox(10);
+        layout.setPadding(new javafx.geometry.Insets(10));
+        TableView<propertySalesStat> tableView = new TableView<>();
+        TableColumn<propertySalesStat, String> yearColumn = new TableColumn<>("Year");
+        TableColumn<propertySalesStat, Number> numberColumn = new TableColumn<>("Sales");
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("property"));
+        numberColumn.setCellValueFactory(cellData -> cellData.getValue().numberProperty());
+        numberColumn.setCellFactory(col -> new TableCell<propertySalesStat, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f", item));
+                }
+            }
+        });
+        tableView.getColumns().add(yearColumn);
+        tableView.getColumns().add(numberColumn);
+        HashMap<String, Double> salesPerYear = CustomerMapUtils.getTotalSalesPerFilter(customerMap, "Year");
+        ObservableList<propertySalesStat> tableData = FXCollections.observableArrayList();
+        salesPerYear.forEach((year, number) -> {
+            tableData.add(new propertySalesStat(year, number));
+        });
+        tableView.setItems(tableData);
+        layout.getChildren().add(tableView);
+        Scene scene = new Scene(layout, 300, 450);
+        statisticsStage.setScene(scene);
+        statisticsStage.show();
+    }
+
+    public void showSalesPerRegionStatistics(HashMap<String, Customer> customerMap) {
+        Stage statisticsStage = new Stage();
+        statisticsStage.setTitle("Total sales per Region");
+        VBox layout = new VBox(10);
+        layout.setPadding(new javafx.geometry.Insets(10));
+        TableView<propertySalesStat> tableView = new TableView<>();
+        TableColumn<propertySalesStat, String> regionColumn = new TableColumn<>("Region");
+        TableColumn<propertySalesStat, Number> numberColumn = new TableColumn<>("Sales");
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>("property"));
+        numberColumn.setCellValueFactory(cellData -> cellData.getValue().numberProperty());
+        numberColumn.setCellFactory(col -> new TableCell<propertySalesStat, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f", item));
+                }
+            }
+        });
+        tableView.getColumns().add(regionColumn);
+        tableView.getColumns().add(numberColumn);
+        HashMap<String, Double> salesPerRegion = CustomerMapUtils.getTotalSalesPerFilter(customerMap, "Region");
+        ObservableList<propertySalesStat> tableData = FXCollections.observableArrayList();
+        salesPerRegion.forEach((region, number) -> {
+            tableData.add(new propertySalesStat(region, number));
+        });
+        tableView.setItems(tableData);
+        layout.getChildren().add(tableView);
+        Scene scene = new Scene(layout, 300, 450);
+        statisticsStage.setScene(scene);
+        statisticsStage.show();
     }
 }
