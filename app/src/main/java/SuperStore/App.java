@@ -6,8 +6,12 @@ package SuperStore;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+
+import com.google.common.collect.Table;
+
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -149,6 +153,7 @@ public class App extends Application {
 
     private void showCustomerTable(BorderPane root, Stage primaryStage, HashMap<String, Customer> customerMap) {
         TableView<Customer> customerTable = createCustomerTable(customerMap);
+        customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         customerTable.setRowFactory(tv -> {
             TableRow<Customer> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -165,6 +170,7 @@ public class App extends Application {
     private void showCustomerOrders(Customer customer, Stage primaryStage) {
         Stage stage = new Stage();
         TableView<Order> orderTable = createOrderTable(customer.getOrders());
+        orderTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         orderTable.setRowFactory(tv -> {
             TableRow<Order> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -183,6 +189,7 @@ public class App extends Application {
 
     private void showOrderProducts(Order order, Stage parentStage) {
         TableView<Product> productTable = createProductTable(order.getProducts());
+        productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         Stage stage = new Stage();
         Scene scene = new Scene(productTable);
         stage.setScene(scene);
@@ -266,12 +273,22 @@ public class App extends Application {
         discountColumn.setCellValueFactory(new PropertyValueFactory<>("discount"));
         TableColumn<Product, Double> quantityColumn = new TableColumn<>("Quantity");
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        // add category
+        TableColumn<Product, String> categoryColumn = new TableColumn<>("Category");
+        categoryColumn.setCellValueFactory(
+                cellData -> new SimpleStringProperty(cellData.getValue().getCategory().category()));
+        TableColumn<Product, String> subCategoryColumn = new TableColumn<>("Sub-Category");
+        subCategoryColumn.setCellValueFactory(
+                cellData -> new SimpleStringProperty(cellData.getValue().getCategory().subCategory()));
+
         table.getColumns().add(idColumn);
         table.getColumns().add(nameColumn);
         table.getColumns().add(salesColumn);
         table.getColumns().add(profitColumn);
         table.getColumns().add(discountColumn);
         table.getColumns().add(quantityColumn);
+        table.getColumns().add(categoryColumn);
+        table.getColumns().add(subCategoryColumn);
         ObservableList<Product> data = FXCollections.observableArrayList(observableMap.values());
         table.setItems(data);
         return table;
