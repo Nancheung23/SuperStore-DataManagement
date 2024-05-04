@@ -55,6 +55,7 @@ application {
 
 // ./gradlew clean shadowJar --refresh-dependencies
 // java -jar .\app\build\libs\app.jar
+// jar tf .\app\build\libs\app.jar > jar_contents.txt
 
 shadowJar {
     archiveClassifier.set('')
@@ -63,18 +64,20 @@ shadowJar {
         attributes 'Main-Class': 'main.Launcher'
     }
     configurations = [project.configurations.runtimeClasspath]
-//    include 'com/**'
-//    include 'SuperStore/**'
-//    include 'org/**'
-//    include 'javafx/**'
-//    include 'META-INF/**'
-//    include '**/*.fxml'
-//    include '**/*.properties'
-//    include '**/*.css'
-//    include '**/*.png'
-//    include '**/*.jpg'
-//    include '**/*.gif'
-//    include '**/*.xml'
+    // include 'SuperStoreOrders.csv'
+    // include 'SuperStoreReturns.csv'
+    // include 'com/**'
+    // include 'SuperStore/**'
+    // include 'org/**'
+    // include 'javafx/**'
+    // include 'META-INF/**'
+    // include '**/*.fxml'
+    // include '**/*.properties'
+    // include '**/*.css'
+    // include '**/*.png'
+    // include '**/*.jpg'
+    // include '**/*.gif'
+    // include '**/*.xml'
 //    relocate 'javafx', 'myapp.shadow.javafx'
 }
 

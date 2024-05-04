@@ -80,8 +80,8 @@ public class App extends Application {
         InputStream dataStream = getClass().getResourceAsStream("/SuperStoreOrders.csv");
         InputStream returnStream = getClass().getResourceAsStream("/SuperStoreReturns.csv");
         if (dataStream != null && returnStream != null) {
-            filePathField.setText("Resource loaded: SuperStoreOrders.csv");
-            rFilePathField.setText("Resource loaded: SuperStoreReturns.csv");
+            filePathField.setText("/SuperStoreOrders.csv");
+            rFilePathField.setText("/SuperStoreReturns.csv");
         } else {
             filePathField.setText("Failed to load default resources");
             rFilePathField.setText("Failed to load default resources");

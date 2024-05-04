@@ -1,8 +1,9 @@
 package SuperStore;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,8 @@ public class FileDataProcessor {
      * @throws IllegalArgumentException if filePath is null or empty.
      */
     public FileDataProcessor(final String filePath) {
-        setFilePath(filePath);
+                this.filePath = filePath;
+        this.lines = new ArrayList<>();
     }
 
     /**
@@ -57,7 +59,8 @@ public class FileDataProcessor {
      * @throws IOException if an I/O error occurs reading from the file.
      */
     public List<String[]> processFile() throws IOException {
-        try (BufferedReader bfr = new BufferedReader(new FileReader(filePath))) {
+        InputStream is = getClass().getResourceAsStream(filePath);
+        try (BufferedReader bfr = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = bfr.readLine()) != null) {
                 lines.add(line);
@@ -66,7 +69,7 @@ public class FileDataProcessor {
         } catch (IOException e) {
             throw new IOException("Error reading from file: " + filePath, e);
         }
-    }
+    } 
 
     /**
      * Processes a list of strings (lines) by splitting each line into an array of
