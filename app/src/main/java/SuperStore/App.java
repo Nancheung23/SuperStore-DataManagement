@@ -4,13 +4,9 @@
 package SuperStore;
 
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-
-import com.google.common.collect.Table;
-
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,7 +29,6 @@ import javafx.stage.Stage;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStream;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 
 import javafx.scene.control.TextField;
@@ -161,7 +156,7 @@ public class App extends Application {
 
     private void showCustomerTable(BorderPane root, Stage primaryStage, HashMap<String, Customer> customerMap) {
         TableView<Customer> customerTable = createCustomerTable(customerMap);
-        customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        // customerTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         customerTable.setRowFactory(tv -> {
             TableRow<Customer> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -220,7 +215,7 @@ public class App extends Application {
         Stage stage = new Stage();
         ObservableList<Order> masterData = FXCollections.observableArrayList(customer.getOrders().values());
         TableView<Order> orderTable = createOrderTable(customer.getOrders());
-        orderTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        // orderTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         orderTable.setRowFactory(tv -> {
             TableRow<Order> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
@@ -262,7 +257,7 @@ public class App extends Application {
 
     private void showOrderProducts(Order order, Stage parentStage, HashMap<String, Customer> customerMap) {
         TableView<Product> productTable = createProductTable(order.getProducts());
-        productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        // productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         Button productButton = new Button("Total Sales for Order");
         productButton.setOnAction(e -> showTotalSalesPerOrder(customerMap, order));
         VBox vbox = new VBox(5);
