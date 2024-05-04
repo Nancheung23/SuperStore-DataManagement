@@ -26,9 +26,9 @@ repositories {
 
 dependencies {
     implementation group: 'com.google.guava', name: 'guava', version: '32.1.2-jre'
-    implementation 'org.openjfx:javafx-base:17'
-    implementation 'org.openjfx:javafx-controls:17'
-    implementation 'org.openjfx:javafx-fxml:17'
+//    implementation 'org.openjfx:javafx-base:17'
+//    implementation 'org.openjfx:javafx-controls:17'
+//    implementation 'org.openjfx:javafx-fxml:17'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 }
@@ -50,30 +50,31 @@ tasks.named('startScripts').configure {
 }
 
 application {
-    mainClass = 'SuperStore.App'
+    mainClass = 'main.Launcher'
 }
 
-// java --module-path .\app\build\resources\main\javafx\lib\ --add-modules javafx.controls,javafx.fxml -jar .\app\build\libs\app.jar 
+// ./gradlew clean shadowJar --refresh-dependencies
+// java -jar .\app\build\libs\app.jar
 
 shadowJar {
     archiveClassifier.set('')
-    mergeServiceFiles()
+//    mergeServiceFiles()
     manifest {
-        attributes 'Main-Class': 'SuperStore.App'
+        attributes 'Main-Class': 'main.Launcher'
     }
     configurations = [project.configurations.runtimeClasspath]
-    include 'com/**'
-    include 'SuperStore/**'
-    include 'org/**'  
-    include 'javafx/**'  
-    include 'META-INF/**'
-    include '**/*.fxml'
-    include '**/*.properties'
-    include '**/*.css'
-    include '**/*.png'
-    include '**/*.jpg'
-    include '**/*.gif'
-    include '**/*.xml'
-    relocate 'javafx', 'myapp.shadow.javafx'
+//    include 'com/**'
+//    include 'SuperStore/**'
+//    include 'org/**'
+//    include 'javafx/**'
+//    include 'META-INF/**'
+//    include '**/*.fxml'
+//    include '**/*.properties'
+//    include '**/*.css'
+//    include '**/*.png'
+//    include '**/*.jpg'
+//    include '**/*.gif'
+//    include '**/*.xml'
+//    relocate 'javafx', 'myapp.shadow.javafx'
 }
 
