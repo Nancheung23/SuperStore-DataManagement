@@ -20,7 +20,7 @@ This Java application manages and displays data from SuperStore, with a focus on
 - **Gradle** - For building and managing dependencies.
 
 ## Project Structure
-app/
+```app/
 ├── build/
 │   └── libs/
 │       └── app.jar
@@ -45,6 +45,7 @@ app/
     │   └── resources/
     │       ├── SuperStoreOrders.csv // source set
     │       └── SuperStoreReturns.csv // source set
+```
 
                 
 ## Getting Started
