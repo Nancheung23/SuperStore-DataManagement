@@ -22,29 +22,30 @@ This Java application manages and displays data from SuperStore, with a focus on
 ## Project Structure
 app/
 ├── build/
-│ ├── libs/
-│ │ └── app.jar
+│   └── libs/
+│       └── app.jar
 └── src/
-├── main/
-│ ├── java/
-│ │ ├── main/
-│ │ │ └── Launcher.java
-│ │ └── SuperStore/
-│ │ ├── Address.java
-│ │ ├── App.java
-│ │ ├── CategoryInfo.java
-│ │ ├── Customer.java
-│ │ ├── CustomerMapUtils.java
-│ │ ├── FileDataProcessor.java
-│ │ ├── FileOutput.java
-│ │ ├── InstanceGenerator.java
-│ │ ├── Order.java
-│ │ ├── Product.java
-│ │ ├── propertyCustomerStat.java
-│ │ └── propertySalesStat.java
-│ └── resources/
-│ ├── SuperStoreOrders.csv
-│ └── SuperStoreReturns.csv
+    ├── main/
+    │   ├── java/
+    │   │   ├── main/
+    │   │   │   └── Launcher.java // entry class
+    │   │   └── SuperStore/
+    │   │       ├── Address.java // Address
+    │   │       ├── App.java // javaFx
+    │   │       ├── CategoryInfo.java // Record, Category
+    │   │       ├── Customer.java // Customer
+    │   │       ├── CustomerMapUtils.java // statistics methods for statistics
+    │   │       ├── FileDataProcessor.java // processor for read file from Inputstream (fits JAR)
+    │   │       ├── FileOutput.java // not in use
+    │   │       ├── InstanceGenerator.java // process stream to objects
+    │   │       ├── Order.java // Order
+    │   │       ├── Product.java // Product
+    │   │       ├── propertyCustomerStat.java // for adding cell into table
+    │   │       └── propertySalesStat.java // for adding cell into table
+    │   └── resources/
+    │       ├── SuperStoreOrders.csv // source set
+    │       └── SuperStoreReturns.csv // source set
+
                 
 ## Getting Started
 To build and run the project, follow these steps:
