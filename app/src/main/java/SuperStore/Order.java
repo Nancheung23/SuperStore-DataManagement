@@ -120,4 +120,8 @@ public class Order {
                 "\nProducts: " + products.size() +
                 "\nReturn: " + isReturn.get();
     }
+
+    public void addProduct(Product product) {
+        products.put(product.getProductId(), product);
+    }
 }

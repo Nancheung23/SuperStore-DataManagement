@@ -85,5 +85,13 @@ public class Customer {
         }
     }
 
+    public void addOrder(Order order) {
+        ordersMap.put(order.getOrderId(), order);
+    }
+
+    public void setId(String string) {
+        this.customerId.set(string);
+    }
+
     // ToString, hashCode, equals as needed
 }
